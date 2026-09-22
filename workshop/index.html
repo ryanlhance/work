@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>The Weekly Performance Brief — Ryan Hance</title>
+  <meta name="description" content="Four weekly files in, four safety gates, one executive brief out." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css?v=1" />
+  <link rel="stylesheet" href="./workshop.css?v=1" />
+</head>
+<body>
+  <nav class="backbar">
+    <a href="../">← All work</a>
+  </nav>
+
+  <main class="page">
+    <header class="masthead">
+      <p class="kicker">Workshop · August 2026</p>
+      <h1>The Weekly Performance Brief</h1>
+      <p class="sub">Four weekly files go in. Four gates check the work. One executive brief comes out, and nothing is released until a person approves it.</p>
+    </header>
+
+    <section class="act" id="act-inputs">
+      <div class="act-head">
+        <span class="act-num">01</span>
+        <h2>What goes in</h2>
+        <p class="act-sub">The four files, exactly as they arrive. Every table below is read straight out of the file.</p>
+      </div>
+      <div class="inputs" id="inputs"></div>
+    </section>
+
+    <section class="act" id="act-gates">
+      <div class="act-head">
+        <span class="act-num">02</span>
+        <h2>What checks it</h2>
+        <p class="act-sub">A skill with rules it cannot talk itself out of, and four gates that each protect against a different kind of failure.</p>
+      </div>
+      <ul class="rules" id="rules"></ul>
+      <div class="gates" id="gates"></div>
+    </section>
+
+    <section class="act" id="act-output">
+      <div class="act-head">
+        <span class="act-num">03</span>
+        <h2>What comes out</h2>
+        <p class="act-sub">A draft PDF: the preparer's review sheet first, then the email. The review sheet never gets attached.</p>
+      </div>
+      <div class="pages" id="pages"></div>
+      <p class="download">
+        <a id="pdf-link" href="#" download>Download the draft PDF</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Ryan Hance</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <a href="mailto:RyanLHance@gmail.com">RyanLHance@gmail.com</a>
+    <span class="dot" aria-hidden="true">·</span>
+    <a href="../">All work</a>
+  </footer>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lb-close" id="lb-close" aria-label="Close">×</button>
+    <img id="lb-img" alt="" />
+  </div>
+
+  <script src="./data.js?v=1"></script>
+  <script src="./workshop.js?v=1"></script>
+</body>
+</html>
