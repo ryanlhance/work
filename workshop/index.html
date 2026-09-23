@@ -4,72 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>The Weekly Performance Brief — Ryan Hance</title>
-  <meta name="description" content="Four weekly files in, four safety gates, one executive brief out." />
+  <title>TIFF Practical Interview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../styles.css?v=1" />
-  <link rel="stylesheet" href="./workshop.css?v=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css?v=8" />
+  <link rel="stylesheet" href="../viewer.css?v=4" />
+  <link rel="stylesheet" href="./workshop.css?v=8" />
 </head>
 <body>
-  <nav class="backbar">
-    <a href="../">← All work</a>
-  </nav>
+  <div class="viewer-bar">
+    <a class="bar-link" href="../">
+      <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3.5M7.5 4l-4 4 4 4"/></svg>
+      <span>All Builds</span>
+    </a>
+  </div>
 
   <main class="page">
     <header class="masthead">
-      <p class="kicker">Workshop · August 2026</p>
-      <h1>The Weekly Performance Brief</h1>
-      <p class="sub">Four weekly files go in. Four gates check the work. One executive brief comes out, and nothing is released until a person approves it.</p>
+      <h1>TIFF Practical Interview</h1>
+      <p class="sub">The use case discovery, prompt engineering, and output development all happened within <strong>one hour</strong>.</p>
     </header>
+    <div class="divider"></div>
 
-    <section class="act" id="act-inputs">
-      <div class="act-head">
-        <span class="act-num">01</span>
-        <h2>What goes in</h2>
-        <p class="act-sub">The four files, exactly as they arrive. Every table below is read straight out of the file.</p>
-      </div>
-      <div class="inputs" id="inputs"></div>
+    <section class="act">
+      <div class="act-head"><h2>The Use Case</h2></div>
+      <div class="use-case" id="use-case"></div>
     </section>
 
-    <section class="act" id="act-gates">
+    <section class="act">
+      <div class="act-head"><h2>Files Received</h2></div>
+      <div class="files-row" id="files-row"></div>
+      <div class="file-panel" id="file-panel" hidden></div>
+    </section>
+
+    <section class="act">
       <div class="act-head">
-        <span class="act-num">02</span>
-        <h2>What checks it</h2>
-        <p class="act-sub">A skill with rules it cannot talk itself out of, and four gates that each protect against a different kind of failure.</p>
+        <h2>Strategy</h2>
+        <p class="act-sub">The decisions I made, and why.</p>
       </div>
-      <ul class="rules" id="rules"></ul>
-      <div class="gates" id="gates"></div>
+      <ol class="strategy" id="strategy"></ol>
     </section>
 
     <section class="act" id="act-output">
-      <div class="act-head">
-        <span class="act-num">03</span>
-        <h2>What comes out</h2>
-        <p class="act-sub">A draft PDF: the preparer's review sheet first, then the email. The review sheet never gets attached.</p>
-      </div>
+      <div class="act-head"><h2>Outputs</h2></div>
+
+      <h3 class="sub-head" id="email-label"></h3>
+      <p class="sub-note" id="email-note"></p>
       <div class="pages" id="pages"></div>
-      <p class="download">
-        <a id="pdf-link" href="#" download>Download the draft PDF</a>
-      </p>
+      <p class="download"><a id="pdf-link" href="#" download>Download the draft email</a></p>
+
+      <h3 class="sub-head" id="dash-label"></h3>
+      <p class="sub-note" id="dash-note"></p>
+      <div class="live" id="live-dashboard">
+        <iframe id="dash-frame" title="Weekly Fund Review dashboard" src="dashboard/"></iframe>
+      </div>
+
+      <h3 class="sub-head" id="gates-label"></h3>
+      <p class="sub-note" id="gates-note"></p>
+      <div class="gates" id="gates"></div>
+
+      <h3 class="sub-head" id="skill-label"></h3>
+      <p class="sub-note" id="skill-note"></p>
+      <div class="skill" id="skill"></div>
     </section>
   </main>
-
-  <footer class="foot">
-    <span>Ryan Hance</span>
-    <span class="dot" aria-hidden="true">·</span>
-    <a href="mailto:RyanLHance@gmail.com">RyanLHance@gmail.com</a>
-    <span class="dot" aria-hidden="true">·</span>
-    <a href="../">All work</a>
-  </footer>
 
   <div class="lightbox" id="lightbox" hidden>
     <button class="lb-close" id="lb-close" aria-label="Close">×</button>
     <img id="lb-img" alt="" />
   </div>
 
-  <script src="./data.js?v=1"></script>
-  <script src="./workshop.js?v=1"></script>
+  <script src="./data.js?v=7"></script>
+  <script src="./workshop.js?v=7"></script>
 </body>
 </html>

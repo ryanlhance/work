@@ -1,0 +1,68 @@
+/* Viewer pages: the live app running inside a phone, hosted here rather than
+   handing the visitor off to the raw site. Inherits tokens from styles.css. */
+
+.device-page > .viewer-bar { margin: 0 -40px; }
+
+.device-page {
+  height: 100vh;
+  display: flex; flex-direction: column;
+  padding: 0 40px 32px;
+}
+
+
+/* Width is set by device.js to the phone's screen width at its current scale,
+   so the copy measures the same as the device it sits above. */
+
+/* The device is taken out of flow: in flow, its full 834px height set the
+   stage's height, and the stage's height was what we measured to scale it. */
+.stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.device-wrap {
+  position: absolute; top: 28px; left: 0; right: 0;
+  display: flex; justify-content: center;
+}
+
+/* The shell is always a true 375x812 so the app lays out exactly as it would on
+   a phone; only the whole device is scaled to fit the window. */
+.device {
+  --shell-w: 375px;
+  --shell-h: 812px;
+  position: relative;
+  width: var(--shell-w);
+  height: var(--shell-h);
+  flex: none;
+  padding: 11px;
+  border-radius: 54px;
+  background: #101014;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.16) inset,
+    0 18px 44px rgba(15, 15, 20, 0.30);
+  transform-origin: top center;
+  transition: transform 120ms ease;
+}
+.device::after {
+  content: "";
+  position: absolute; z-index: 2;
+  top: 23px; left: 50%; transform: translateX(-50%);
+  width: 116px; height: 33px;
+  background: #101014;
+  border-radius: 999px;
+}
+.device iframe {
+  width: 100%; height: 100%;
+  border: 0;
+  border-radius: 44px;
+  display: block;
+  background: #fff;
+}
+
+
+@media (max-width: 760px) {
+  .device-page > .viewer-bar { margin: 0 -40px; }
+
+.device-page { padding: 0 20px 28px; }
+  .stage { padding-top: 22px; }
+}
+
+@media (max-width: 760px) {
+  .device-page > .viewer-bar { margin: 0 -20px; }
+}

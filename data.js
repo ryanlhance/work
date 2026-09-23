@@ -1,85 +1,121 @@
 /* Portfolio contents. Edit here; index.html and app.js stay content-free.
-   status: "live"  -> card is clickable
-   status: "soon"  -> card renders dimmed, not clickable  */
+   status: "live" -> clickable.  status: "soon" -> quiet placeholder.
+   frame: "phone" -> shot captured at device size, rendered in a device frame.
+   frameBg -> the backdrop behind a framed phone, drawn from the app itself. */
 window.WORK = {
+  // bump when screenshots are recaptured so browsers stop serving the old ones
+  shotsVersion: 2,
+  title: "Ryan Hance's AI Builds",
+  askLabel: "Ask Me About",
+  topics: [
+    { title: "Self-Determination Theory", points: [
+      "Competence",
+      "Autonomy",
+      "Relatedness"
+    ] },
+    { title: "Your AI Project Needs You to be its CEO", points: [
+      "Vision",
+      "Development",
+      "Prioritization"
+    ] },
+    { title: "LLMs as Coachable Employees", points: [
+      "Expectations",
+      "Boundaries",
+      "Freedom with Correction"
+    ] },
+    { title: "AI for Improved Communication", points: [
+      "Attention Span is Short, We Need Visuals",
+      "See Patterns Easier",
+      "Anyone Can Communicate to Anyone"
+    ] },
+    { title: "Measuring the Value of AI", points: [
+      "Time Saved over Employee Average Lifetime minus Build Effort",
+      "Build Time vs Potential Time Savings",
+      "Internal Net Promoter Score Correlation to Employee Retention"
+    ] }
+  ],
   cards: [
     {
-      id: "personas",
-      title: "Agentic Personas",
-      blurb: "Message a scripted end user inside a Microsoft Teams replica.",
-      tag: "Live demo",
-      href: "https://ryanlhance.github.io/farmer-persona/",
-      shot: "shots/personas.png",
+      title: "Front Office",
+      blurb: "Experience how I use data visualization to make decisions in my fantasy hockey league.",
+      tag: "Data Visualization for Decision Making",
+      href: "front-office/",
+      shot: "shots/frontoffice.png",
       status: "live"
     },
     {
-      id: "fitmap",
-      title: "The TIFF Fit Map",
-      blurb: "Your job description, with my evidence sitting under the parts I have done.",
-      tag: "Live demo",
-      href: "https://ryanlhance.github.io/tiff/",
+      title: "Draft Room",
+      blurb: "Decide my final pick in a fantasy hockey draft.",
+      tag: "Data Visualization for Decision Making",
+      href: "draft-room/",
+      shot: "shots/draftroom.png",
+      status: "live"
+    },
+    {
+      title: "Skill Map",
+      blurb: "Explore an interactive data visualization of my skills in context.",
+      tag: "Creatively Presenting Information",
+      href: "skill-map/",
+      shot: "shots/constellation.png",
+      status: "live"
+    },
+    {
+      title: "TIFF Fit Map",
+      blurb: "Click through the job description for this role to see my relevant experience in context.",
+      tag: "Creatively Presenting Information",
+      href: "fit-map/",
       shot: "shots/fitmap.png",
       status: "live"
     },
     {
-      id: "workshop",
-      title: "The Weekly Performance Brief",
-      blurb: "Four weekly files in, four safety gates, one executive brief out.",
-      tag: "Walkthrough",
+      title: "Record Collection",
+      blurb: "Flip through my record shelf by genre or get inspired by the randomizer at the top.",
+      tag: "Apps for Extremely Niche Needs",
+      href: "record-collection/",
+      shot: "shots/records.png",
+      frame: "phone",
+      frameBg: "#d9c5a3",
+      status: "live"
+    },
+    {
+      title: "Feels Like",
+      blurb: "Test my very first app, used for clothing decisions in the complex weather of North Georgia.",
+      tag: "Apps for Extremely Niche Needs",
+      href: "feels-like/",
+      shot: "shots/feelslike.png",
+      frame: "phone",
+      frameBg: "#cfe0ee",
+      status: "live"
+    },
+    {
+      title: "TIFF Sample Project",
+      blurb: "Follow the process from use case to output from my live case study.",
+      tag: "Improving Standard Communication with Visuals",
       href: "workshop/",
       shot: "shots/workshop.png",
       status: "live"
     },
     {
-      id: "constellation",
-      title: "Skills Constellation",
-      blurb: "Everything I know how to do, mapped as a sky you can drag, search and open.",
-      tag: "Live demo",
-      href: "https://ryanlhance.github.io/skills/",
-      shot: "shots/constellation.png",
-      status: "live"
-    },
-    {
-      id: "managerhub",
       title: "League Manager Hub",
-      blurb: "The season hub I built for the managers in my hockey league.",
-      tag: "Live demo",
-      href: "https://ryanlhance.github.io/dggt/",
+      blurb: "Consider how an information hub for fantasy hockey reflects a business wiki.",
+      tag: "Improving Standard Communication with Visuals",
+      href: "league/",
       shot: "shots/managerhub.png",
       status: "live"
     },
     {
-      id: "draftroom",
-      title: "DCHC Draft Room",
-      blurb: "",
-      tag: "In progress",
-      href: "",
-      shot: "",
-      status: "soon"
+      title: "Agentic Personas",
+      blurb: "Ask a large scale farming operator anything.",
+      tag: "Information Architecture for Human-like Outputs",
+      href: "personas/",
+      shot: "shots/personas.png",
+      status: "live"
     },
     {
-      id: "frontoffice",
-      title: "DCHC Front Office",
-      blurb: "",
-      tag: "In progress",
-      href: "",
-      shot: "",
-      status: "soon"
-    },
-    {
-      id: "knowledge",
       title: "Career Knowledge Architecture",
-      blurb: "How my career knowledge management system is put together.",
-      tag: "In progress",
-      href: "",
-      shot: "",
-      status: "soon"
+      blurb: "Learn how I structure inputs to create dynamic and informed outputs.",
+      tag: "Information Architecture for Human-like Outputs",
+      href: "", shot: "", status: "soon"
     }
-  ],
-  topics: [
-    "Self-Determination Theory",
-    "LLMs as Coachable Employees",
-    "Your AI Project Needs You to be its CEO",
-    "Visual Communication"
   ]
 };

@@ -1,150 +1,182 @@
 :root {
-  --ink: #0a0d13;
-  --ink-2: #0e1219;
-  --ink-3: #141924;
-  --paper: #f0ecdf;
-  --paper-dim: #d6d2c5;
-  --paper-faint: #8f8c81;
-  --line: rgba(236, 232, 221, 0.13);
-  --line-soft: rgba(236, 232, 221, 0.07);
-  --gold: #eed092;
-  --display: "Bricolage Grotesque", "Archivo", sans-serif;
-  --sans: "Archivo", "Helvetica Neue", sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* One neutral shell. The screenshots supply all the color. */
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --ink: #17171a;
+  --ink-soft: #5c5b57;
+  --ink-faint: #8d8c87;
+  --rule: #e2e0da;
+  --rule-strong: #c9c6bd;
+
+  /* Five steps, nothing in between. */
+  --t-xs: 13px;
+  --t-s: 15px;
+  --t-m: 17px;
+  --t-l: 22px;
+  --t-xl: 40px;
+
+  --font: "Archivo", -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--t-s);
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
 }
 a { color: inherit; text-decoration: none; }
 
-.page {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 88px 32px 40px;
-}
+.page { max-width: 1120px; margin: 0 auto; padding: 72px 40px 88px; }
 
-/* ---------- masthead ---------- */
-.masthead { margin-bottom: 56px; }
-.kicker {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+/* ---------- head ---------- */
+.masthead {
+  padding-bottom: 32px; margin-bottom: 48px;
+  border-bottom: 1px solid var(--rule);
 }
 .masthead h1 {
-  font-family: var(--display); font-weight: 600;
-  font-size: clamp(34px, 5.4vw, 56px); line-height: 1.04;
-  letter-spacing: -0.02em; margin-bottom: 14px;
-}
-.masthead .sub {
-  font-size: 15px; line-height: 1.5; color: var(--paper-dim); max-width: 44ch;
-}
-
-/* ---------- gallery ---------- */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-}
-
-.card {
-  display: flex; flex-direction: column;
-  background: var(--ink-2);
-  border: 1px solid var(--line-soft);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
-}
-.card--live:hover, .card--live:focus-visible {
-  border-color: rgba(238, 208, 146, 0.42);
-  background: var(--ink-3);
-  transform: translateY(-3px);
-  outline: none;
-}
-.card--soon { opacity: 0.44; }
-
-.card-shot {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  background: #0c1017;
-  border-bottom: 1px solid var(--line-soft);
-  overflow: hidden;
-}
-.card-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-.card-shot--empty {
-  display: grid; place-items: center;
-  background:
-    radial-gradient(120% 90% at 30% 0%, rgba(238,208,146,0.07), transparent 60%),
-    repeating-linear-gradient(135deg, rgba(236,232,221,0.035) 0 1px, transparent 1px 11px);
-}
-.card-shot--empty span {
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--paper-faint);
-}
-
-.card-body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
-.card-tag {
-  font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--gold);
-}
-.card--soon .card-tag { color: var(--paper-faint); }
-.card-title {
-  font-family: var(--display); font-weight: 600; font-size: 20.5px;
-  letter-spacing: -0.01em; line-height: 1.2;
-}
-.card-blurb { font-size: 14px; line-height: 1.55; color: var(--paper-dim); text-wrap: pretty; }
-.card-go {
-  margin-top: auto; padding-top: 14px;
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--paper-faint);
-  display: flex; align-items: center; gap: 8px;
-  transition: color 160ms ease;
-}
-.card--live:hover .card-go { color: var(--gold); }
-.card-go .arrow { transition: transform 160ms ease; }
-.card--live:hover .card-go .arrow { transform: translateX(4px); }
-
-/* ---------- ask me about ---------- */
-.topics {
-  margin-top: 84px; padding-top: 40px;
-  border-top: 1px solid var(--line);
-}
-.topics h2 {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--gold); font-weight: 400;
+  font-size: var(--t-xl); font-weight: 600;
+  letter-spacing: -0.022em; line-height: 1.08;
   margin-bottom: 26px;
 }
-.topic-list { list-style: none; display: flex; flex-direction: column; }
-.topic-list li {
-  font-family: var(--display); font-weight: 500;
-  font-size: clamp(20px, 3vw, 29px); line-height: 1.25; letter-spacing: -0.01em;
-  padding: 15px 0; border-bottom: 1px solid var(--line-soft);
-  display: flex; align-items: baseline; gap: 18px;
+.ask-label { font-size: var(--t-s); font-weight: 600; margin-bottom: 7px; }
+.ask > ul { list-style: none; }
+
+.ask summary {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: var(--t-xs); color: var(--ink-soft);
+  padding: 7px 0; cursor: pointer; list-style: none;
 }
-.topic-list li:last-child { border-bottom: 0; }
-.topic-list .num {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
-  color: var(--paper-faint); flex: none; transform: translateY(-2px);
+.ask summary::-webkit-details-marker { display: none; }
+.ask summary:hover { color: var(--ink); }
+.ask details[open] summary { color: var(--ink); font-weight: 500; }
+.chev {
+  display: inline-block; color: var(--rule-strong);
+  transition: transform 140ms ease; transform-origin: 50% 55%;
+}
+.ask details[open] .chev { transform: rotate(90deg); color: var(--ink-faint); }
+
+.ask-points { list-style: none; padding: 0 0 10px 18px; }
+.ask-points li {
+  font-size: var(--t-xs); color: var(--ink-soft);
+  padding-left: 14px; position: relative; line-height: 1.7;
+}
+.ask-points li::before { content: "\00b7"; position: absolute; left: 2px; color: var(--rule-strong); }
+.ask-points .pending { color: var(--ink-faint); }
+
+/* ---------- gallery ---------- */
+.group + .group { margin-top: 72px; }
+.group-title {
+  font-size: var(--t-l); font-weight: 600;
+  letter-spacing: -0.016em; margin-bottom: 26px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 52px 40px;
 }
 
-/* ---------- footer ---------- */
-.foot {
-  max-width: 1080px; margin: 0 auto;
-  padding: 26px 32px 56px;
-  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-  font-size: 13px; color: var(--paper-faint);
-  border-top: 1px solid var(--line-soft);
+.card { display: block; }
+.card-shot {
+  aspect-ratio: 16 / 10;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
-.foot a { color: var(--paper-dim); }
-.foot a:hover { color: var(--gold); }
-.foot .dot { color: var(--paper-faint); }
+.card-shot img {
+  width: 100%; height: 100%; display: block;
+  object-fit: cover; object-position: top center;
+}
+/* Hover reads the same on a black screenshot and a near-white one: the border
+   steps to a definite value rather than relying on a shadow the page swallows. */
+.card--live:hover .card-shot {
+  border-color: var(--ink-faint);
+  box-shadow: 0 4px 14px rgba(23, 23, 26, 0.10);
+}
+.card--live:hover .card-title { text-decoration: underline; text-underline-offset: 3px; }
 
-@media (max-width: 720px) {
-  .page { padding: 56px 20px 32px; }
-  .gallery { grid-template-columns: 1fr; gap: 20px; }
-  .topics { margin-top: 60px; }
-  .foot { padding: 24px 20px 44px; }
+.card-title { font-size: var(--t-m); font-weight: 600; letter-spacing: -0.012em; margin-bottom: 4px; }
+.card-blurb { color: var(--ink-soft); text-wrap: pretty; }
+
+/* ---------- phone-framed cards ----------
+   A phone is portrait and the card is 16:10, so a device that fits entirely
+   inside the card is too small to read. The phone is sized to be legible and
+   runs off the bottom edge instead, the way a device shot usually sits. */
+.card-shot--phone { position: relative; background: #edebe5; }
+.phone {
+  position: absolute;
+  left: 50%;
+  top: 9%;
+  transform: translateX(-50%);
+  width: 41%;
+  aspect-ratio: 375 / 812;
+  padding: 5px;
+  border-radius: 26px;
+  background: #101014;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+    0 10px 26px rgba(15, 15, 20, 0.34);
+}
+/* Dynamic island, proportional to the device so it holds at any card width. */
+.phone::after {
+  content: "";
+  position: absolute; z-index: 2;
+  top: 1.7%; left: 50%; transform: translateX(-50%);
+  width: 31%; height: 4.2%;
+  background: #101014;
+  border-radius: 999px;
+}
+.phone img {
+  width: 100%; height: 100%; display: block;
+  object-fit: cover; object-position: top center;
+  border-radius: 21px;
+}
+
+.card--soon .card-shot {
+  background: transparent;
+  border-style: dashed;
+  display: grid; place-items: center;
+}
+.card--soon .placeholder {
+  font-size: var(--t-xs); color: var(--ink-faint);
+  padding: 0 24px; text-align: center; text-wrap: pretty;
+}
+.card--soon .card-title { color: var(--ink-faint); font-weight: 500; }
+.card--soon .card-blurb { color: var(--ink-faint); }
+
+/* ---------- scroll hint ---------- */
+.scroll-hint {
+  position: fixed; right: 30px; bottom: 30px; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  font-size: var(--t-xs); color: var(--ink-faint);
+  pointer-events: none;           /* a hint, not a control */
+  transition: opacity 160ms linear;
+}
+.hint-arrow {
+  width: 13px; height: 13px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round;
+  animation: hint-bob 2.4s ease-in-out infinite;
+}
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hint-arrow { animation: none; }
+}
+
+@media (max-width: 760px) {
+  :root { --t-xl: 30px; }
+  .page { padding: 44px 22px 64px; }
+  .grid { grid-template-columns: 1fr; gap: 40px; }
+  .scroll-hint { right: 18px; bottom: 18px; }
+  .group + .group { margin-top: 56px; }
+  .phone { width: 46%; }
 }
