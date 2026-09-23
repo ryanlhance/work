@@ -27,6 +27,13 @@
       ul.appendChild(el("li", "pending", "Points to come."));
     }
     det.appendChild(ul);
+    /* accordion: opening one closes the rest */
+    det.addEventListener("toggle", function () {
+      if (!det.open) return;
+      topics.querySelectorAll("details[open]").forEach(function (other) {
+        if (other !== det) other.open = false;
+      });
+    });
     li.appendChild(det);
     topics.appendChild(li);
   });

@@ -27,6 +27,23 @@ native image drags a phone would never start, and hide the league's dues link in
 the portfolio's copy without touching the real hub. The dev server proxies the
 pieces that need it so the preview behaves the same.
 
+## Files authored elsewhere
+
+Four files here are exported from other projects: the two DCHC builds, the
+dashboard, and the skill. Editing them in place means the next export silently
+undoes the edit, so the edits live in `import_pieces.py` instead. After any
+re-export:
+
+```
+python3 import_pieces.py
+python3 shoot.py --local draftroom frontoffice dashboard
+```
+
+It is idempotent, and it fails loudly if an export's markup changed enough that
+an edit no longer applies, rather than shipping it half-done. The viewer also
+re-applies the DCHC title expansion at load time if it finds it missing, so a
+file dropped in without running the script still renders correctly.
+
 ## Screenshots
 
 ```

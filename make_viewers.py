@@ -11,20 +11,20 @@ HERE = pathlib.Path(__file__).parent
 # slug, title, tag, deployed src, local src (None = same), injected CSS
 PIECES = [
     ("front-office", "Front Office", "Data Visualization for Decision Making",
-     "../pieces/front-office.html", None, ""),
+     "../pieces/front-office.html", None, "", "DCHC"),
     ("draft-room", "Draft Room", "Data Visualization for Decision Making",
-     "../pieces/draft-room.html", None, ""),
+     "../pieces/draft-room.html", None, "", "DCHC"),
     ("skill-map", "Skill Map", "Creatively Presenting Information",
-     "https://ryanlhance.github.io/skills/", None, ""),
+     "https://ryanlhance.github.io/skills/", None, "", ""),
     ("fit-map", "TIFF Fit Map", "Creatively Presenting Information",
-     "https://ryanlhance.github.io/tiff/", None, ""),
+     "https://ryanlhance.github.io/tiff/", None, "", ""),
     ("league", "League Manager Hub", "Improving Standard Communication with Visuals",
      "https://ryanlhance.github.io/dggt/", "/dggt/",
      # The dues link is for Ryan's managers, not for an interview audience.
      # Hidden in the portfolio's copy only; the real hub still shows it.
-     '.duescard a[href*="venmo"]{display:none}'),
+     '.duescard a[href*="venmo"]{display:none}', ""),
     ("personas", "Agentic Personas", "Information Architecture for Human-like Outputs",
-     "https://ryanlhance.github.io/farmer-persona/", None, ""),
+     "https://ryanlhance.github.io/farmer-persona/", None, "", ""),
 ]
 
 TEMPLATE = """<!DOCTYPE html>
@@ -47,14 +47,10 @@ TEMPLATE = """<!DOCTYPE html>
         <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3.5M7.5 4l-4 4 4 4"/></svg>
         <span>All Builds</span>
       </a>
-      <a class="bar-link bar-out" href="{out}" target="_blank" rel="noopener noreferrer">
-        <span>Open Full Size</span>
-        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11l6-6M5.5 5H11v5.5"/></svg>
-      </a>
     </nav>
     <div class="viewer-stage">
       <iframe id="app-frame" title="{title}"
-              data-src="{src}"{local}{inject}></iframe>
+              data-src="{src}"{local}{inject}{retitle}></iframe>
     </div>
   </div>
   <script src="../viewer.js?v={v}"></script>
@@ -62,20 +58,22 @@ TEMPLATE = """<!DOCTYPE html>
 </html>
 """
 
-V = 4
+V = 6
 
 
 def main():
-    for slug, title, tag, src, local, inject in PIECES:
+    for slug, title, tag, src, local, inject, *rest in PIECES:
+        retitle = rest[0] if rest else ""
         d = HERE / slug
         d.mkdir(exist_ok=True)
         (d / "index.html").write_text(TEMPLATE.format(
             title=html.escape(title),
             tag=html.escape(tag),
             src=html.escape(src, quote=True),
-            out=html.escape(src, quote=True),
             local=f'\n              data-src-local="{html.escape(local, quote=True)}"' if local else "",
             inject=f'\n              data-inject="{html.escape(inject, quote=True)}"' if inject else "",
+            retitle=(f'\n              data-retitle-prefix="{html.escape(retitle, quote=True)}"'
+                     f'\n              data-retitle-club="Dogwood City Hockey Club"') if retitle else "",
             v=V,
         ), encoding="utf-8")
         print(f"  {slug}/index.html  ->  {src}")

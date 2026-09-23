@@ -16,7 +16,6 @@
   font-weight: 500;
 }
 .bar-link:hover { color: var(--ink); }
-.bar-out { margin-left: auto; }
 
 /* Unicode arrows are hairlines at this size. These are drawn, and sized to the
    text's cap height (9.4px at 13px Archivo) rather than its em box — drawn to

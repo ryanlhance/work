@@ -4,7 +4,7 @@
    frameBg -> the backdrop behind a framed phone, drawn from the app itself. */
 window.WORK = {
   // bump when screenshots are recaptured so browsers stop serving the old ones
-  shotsVersion: 2,
+  shotsVersion: 3,
   title: "Ryan Hance's AI Builds",
   askLabel: "Ask Me About",
   topics: [

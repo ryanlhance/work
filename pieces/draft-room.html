@@ -232,7 +232,9 @@ textarea{width:100%;height:132px;padding:9px;border:1px solid var(--line);border
 .final b{font-weight:600}
 .final.done{background:color-mix(in srgb, var(--pos, #2e7d4f) 22%, transparent)}
 </style><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&display=swap" rel="stylesheet"><style>
-/* Club lockup: the club name sits above the tool name, both in caps case. */
+/* Club lockup: the club name sits above the tool name, both in caps case.
+   The floor on the club size matters: the draft room's title bar is 17px, so a
+   plain em ratio renders it at 7px and it disappears. */
 .dchc-title { display: block; }
 .dchc-title .club {
   display: block;
