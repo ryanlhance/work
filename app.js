@@ -12,29 +12,50 @@
   document.getElementById("ask-label").textContent = data.askLabel;
 
   var topics = document.getElementById("topics");
-  data.topics.forEach(function (t) {
-    var li = el("li");
-    var det = el("details");
-    var sum = el("summary");
-    sum.appendChild(el("span", "chev", "\u203A"));
-    sum.appendChild(el("span", null, t.title));
-    det.appendChild(sum);
 
+  /* Buttons and panels rather than <details>: a closed <details> hides its
+     content immediately, so it can only snap. A panel whose row goes from 0fr
+     to 1fr animates in both directions, which means the one closing and the one
+     opening move together instead of the page jumping between them. */
+  var panels = [];
+
+  function setOpen(i, open) {
+    var pair = panels[i];
+    pair.btn.setAttribute("aria-expanded", open ? "true" : "false");
+    pair.panel.classList.toggle("is-open", open);
+  }
+
+  data.topics.forEach(function (t, i) {
+    var li = el("li");
+
+    var btn = el("button", "ask-toggle");
+    btn.type = "button";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", "ask-panel-" + i);
+    btn.appendChild(el("span", "chev", "\u203A"));
+    btn.appendChild(el("span", null, t.title));
+
+    var panel = el("div", "ask-panel");
+    panel.id = "ask-panel-" + i;
+    var inner = el("div");
     var ul = el("ul", "ask-points");
     if (t.points && t.points.length) {
       t.points.forEach(function (pt) { ul.appendChild(el("li", null, pt)); });
     } else {
       ul.appendChild(el("li", "pending", "Points to come."));
     }
-    det.appendChild(ul);
-    /* accordion: opening one closes the rest */
-    det.addEventListener("toggle", function () {
-      if (!det.open) return;
-      topics.querySelectorAll("details[open]").forEach(function (other) {
-        if (other !== det) other.open = false;
-      });
+    inner.appendChild(ul);
+    panel.appendChild(inner);
+
+    btn.addEventListener("click", function () {
+      var isOpen = panel.classList.contains("is-open");
+      panels.forEach(function (_, n) { setOpen(n, false); });
+      if (!isOpen) setOpen(i, true);
     });
-    li.appendChild(det);
+
+    panels.push({ btn: btn, panel: panel });
+    li.appendChild(btn);
+    li.appendChild(panel);
     topics.appendChild(li);
   });
 
