@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Re-import the artifacts this portfolio does not author, and re-apply its edits.
 
-Four files here are built somewhere else and exported into this repo. Editing
+Five files here are built somewhere else and exported into this repo. Editing
 them by hand means the next export silently undoes the edit, so the edits live
 in this script instead. Run it after any re-export:
 
@@ -17,6 +17,7 @@ HERE = pathlib.Path(__file__).parent
 HOME = pathlib.Path.home()
 DCHC = HOME / "Documents/Claude/DCHC Portfolio Pieces"
 TIFF = HOME / "Documents/Claude/TIFF Project"
+CAREER = HOME / "Documents/Claude/Code Build Space/career-system-map"
 
 META = '<meta name="robots" content="noindex, nofollow" />'
 FONT = ('<link href="https://fonts.googleapis.com/css2?'
@@ -108,10 +109,11 @@ def main():
     copy_html(DCHC / "dchc-draft-room.html", HERE / "pieces/draft-room.html", "Draft Room")
     copy_html(DCHC / "dchc-front-office.html", HERE / "pieces/front-office.html", "Front Office")
     copy_html(TIFF / "weekly-fund-review.html", HERE / "workshop/dashboard/index.html")
+    copy_html(CAREER / "career-system-map.html", HERE / "pieces/career-architecture.html")
     copy_binary(TIFF / "weekly-performance-brief.skill",
                 HERE / "workshop/weekly-performance-brief.skill")
     print("\nnow recapture the cards:")
-    print("  python3 shoot.py --local draftroom frontoffice dashboard")
+    print("  python3 shoot.py --local draftroom frontoffice dashboard careerarch")
 
 
 if __name__ == "__main__":

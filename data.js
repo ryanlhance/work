@@ -4,7 +4,7 @@
    frameBg -> the backdrop behind a framed phone, drawn from the app itself. */
 window.WORK = {
   // bump when screenshots are recaptured so browsers stop serving the old ones
-  shotsVersion: 3,
+  shotsVersion: 4,
   title: "Ryan Hance's AI Builds",
   askLabel: "Ask Me About",
   topics: [
@@ -115,7 +115,9 @@ window.WORK = {
       title: "Career Knowledge Architecture",
       blurb: "Learn how I structure inputs to create dynamic and informed outputs.",
       tag: "Information Architecture for Human-like Outputs",
-      href: "", shot: "", status: "soon"
+      href: "career-architecture/",
+      shot: "shots/careerarch.png",
+      status: "live"
     }
   ]
 };

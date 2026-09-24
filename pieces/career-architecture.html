@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ryan Hance's Career Knowledge Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   Type: Geist throughout. Headings 600, labels 500, body 400.
+         Sizes: 28 / 17 / 15 / 14 / 12.5. Nothing else.
+   One card: 200 x 56, radius 12. One faded pill: 200 x 28, radius 8.
+   One rule row: 200 x 34, radius 8. Frames radius 16, lanes radius 20.
+   States: rest (paper), lit (ink), picked (ink + gold ring), faded (pill).
+   Color: section hue appears only in icons and header underlines.
+   ============================================================ */
+:root {
+  --paper: #f3efe4;
+  --paper-2: #ebe6d8;
+  --card: #fbf9f3;
+  --ink: #151920;
+  --ink-soft: #3b4049;
+  --dim: #75736d;
+  --line: rgba(21, 25, 32, 0.13);
+  --gold: #c99a45;
+
+  --c-inputs: #66784c;   --l-inputs: #c3d1a6;   --d-inputs: #34422a;
+  --c-context: #a4772b;  --l-context: #ecc678;  --d-context: #5c3f10;
+  --c-gates: #3b6d69;    --l-gates: #9ccdc6;    --d-gates: #173f3c;
+  --c-rules: #7c6150;    --l-rules: #ddbea4;    --d-rules: #47352a;
+  --c-outputs: #46607c;  --l-outputs: #b1c6de;  --d-outputs: #1f3248;
+
+  --display: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --t-move: .9s;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: radial-gradient(1400px 800px at 38% 42%, #f8f5ed 0%, var(--paper) 55%, var(--paper-2) 100%);
+  color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden;
+}
+#viewport { position: fixed; inset: 0; overflow: hidden; }
+body.narrow #viewport { overflow: auto; -webkit-overflow-scrolling: touch; }
+body.scrolly #viewport { overflow-x: hidden; overflow-y: auto; }
+#sizer { position: relative; width: 100%; height: 100%; }
+#stage { position: absolute; left: 0; top: 0; width: 1440px; height: 1124px; transform-origin: 0 0; }
+
+/* ---------- header ---------- */
+.masthead { position: absolute; left: 58px; top: 48px; max-width: 1000px; }
+.masthead h1 { font: 600 30px/1.15 var(--display); letter-spacing: -0.025em; }
+.masthead .cta {
+  margin-top: 14px; display: inline-flex; align-items: center; gap: 10px;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: 500 15px/1 var(--sans); color: var(--ink);
+}
+.masthead .cta .play {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--ink);
+  display: grid; place-items: center; transition: transform .2s var(--ease), background-color .2s;
+}
+.masthead .cta .play svg { width: 10px; height: 10px; fill: #f5f1e6; margin-left: 2px; }
+.masthead .cta:hover .play, .masthead .cta:focus-visible .play { transform: scale(1.08); background: var(--gold); }
+.masthead .cta:hover span, .masthead .cta:focus-visible span { text-decoration: underline; text-underline-offset: 3px; }
+.masthead p { margin-top: 10px; font: 400 15px/1.5 var(--sans); color: var(--dim); }
+
+#reset {
+  position: fixed; left: 0; top: 0; z-index: 30;
+  font: 500 14px/1 var(--sans); color: var(--ink);
+  background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+  padding: 11px 18px; cursor: pointer;
+  opacity: 0; pointer-events: none; transform: translateY(-4px);
+  transition: opacity .35s var(--ease), transform .35s var(--ease), border-color .2s;
+}
+#reset.show { opacity: 1; pointer-events: auto; transform: none; }
+#reset:hover { border-color: rgba(21, 25, 32, 0.4); }
+
+/* ---------- columns ---------- */
+.lane { position: absolute; top: 196px; bottom: 104px; border-radius: 20px; background: color-mix(in srgb, var(--sec) 7%, transparent); }
+.colhead {
+  position: absolute; top: 220px; display: flex; align-items: center; gap: 8px;
+  font: 600 18px/1 var(--display); letter-spacing: -0.015em; cursor: help; padding-bottom: 10px;
+}
+.colhead svg { width: 15px; height: 15px; fill: none; stroke: var(--dim); stroke-width: 1.8; stroke-linecap: round; }
+
+/* ---------- cards ---------- */
+.node {
+  position: absolute; left: 0; top: 0;
+  display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 10px;
+  padding: 0 12px 0 10px;
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(21, 25, 32, 0.04);
+  font: 500 14px/1.2 var(--sans); text-align: left;
+  cursor: pointer; outline: none; overflow: hidden;
+  transition:
+    transform var(--t-move) var(--ease), width var(--t-move) var(--ease), height var(--t-move) var(--ease),
+    opacity .4s var(--ease), background-color .4s var(--ease), color .4s var(--ease),
+    border-color .3s var(--ease), box-shadow .4s var(--ease), border-radius .4s var(--ease);
+  will-change: transform;
+}
+.node:hover, .node:focus-visible { border-color: rgba(21, 25, 32, 0.4); }
+.node .chip {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--sec) 13%, transparent);
+  transition: all .4s var(--ease);
+}
+.node svg { width: 17px; height: 17px; fill: none; stroke: var(--sec); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; transition: stroke .4s var(--ease), width .4s, height .4s; }
+.node .label { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Rule row: the small version of a card, used inside output frames */
+.node.rule { font-size: 12.5px; line-height: 1.1; border-radius: 8px; grid-template-columns: 16px 1fr; gap: 8px; padding: 0 10px; }
+.node.rule .chip { width: 16px; height: 16px; background: none; }
+.node.rule svg { width: 14px; height: 14px; }
+.node.rule .label { -webkit-line-clamp: 2; }
+.node.hidden { opacity: 0; pointer-events: none; }
+
+/* Faded pill: the same in every column */
+.node.pill {
+  font-size: 12.5px; border-radius: 8px; grid-template-columns: 16px 1fr; gap: 8px; padding: 0 10px;
+  color: rgba(21, 25, 32, 0.38); background: rgba(246, 243, 235, 0.96); border-color: rgba(21, 25, 32, 0.07); box-shadow: none;
+}
+.node.pill .chip { width: 16px; height: 16px; background: none; }
+.node.pill svg { width: 13px; height: 13px; stroke: rgba(21, 25, 32, 0.3); }
+.node.pill .label { display: block; white-space: nowrap; text-overflow: ellipsis; }
+.node.pill:hover { color: rgba(21, 25, 32, 0.7); border-color: rgba(21, 25, 32, 0.2); }
+
+.node.on {
+  /* --t is this card's share of influence on (or from) the selected card: 1 = the section's deepest tone */
+  background: color-mix(in srgb, var(--deep) calc(var(--t, 1) * 100%), var(--card));
+  border-color: color-mix(in srgb, var(--deep) calc(40% + var(--t, 1) * 60%), transparent);
+  color: #f7f3ea; box-shadow: 0 8px 20px rgba(21, 25, 32, calc(var(--t, 1) * 0.18));
+}
+.node.on.picked { background: var(--ink); border-color: var(--ink); }
+.node.on.soft { color: var(--ink); }
+.node.on.soft svg { stroke: var(--sec); }
+.node.on.soft .chip { background: color-mix(in srgb, var(--sec) 13%, transparent); }
+.node.on .chip { background: rgba(255, 255, 255, 0.08); }
+.node.rule.on .chip { background: none; }
+.node.on svg { stroke: var(--lit); }
+.node.picked { box-shadow: 0 0 0 2.5px var(--gold), 0 10px 24px rgba(21, 25, 32, 0.24); }
+
+.s-inputs  { --sec: var(--c-inputs);  --lit: var(--l-inputs);  --deep: var(--d-inputs); }
+.s-context { --sec: var(--c-context); --lit: var(--l-context); --deep: var(--d-context); }
+.s-gates   { --sec: var(--c-gates);   --lit: var(--l-gates);   --deep: var(--d-gates); }
+.s-rules   { --sec: var(--c-rules);   --lit: var(--l-rules);   --deep: var(--d-rules); }
+.s-outputs { --sec: var(--c-outputs); --lit: var(--l-outputs); --deep: var(--d-outputs); }
+
+/* ---------- output frames (hold the rules) ---------- */
+.frame {
+  position: absolute; left: 0; top: 0; border-radius: 16px;
+  border: 1px solid rgba(21, 25, 32, 0.1); background: rgba(255, 255, 255, 0.32);
+  transition: transform var(--t-move) var(--ease), width var(--t-move) var(--ease), height var(--t-move) var(--ease), opacity .4s var(--ease);
+}
+.frame.gone { opacity: 0; }
+.frame .foot {
+  position: absolute; left: 12px; right: 12px; bottom: 9px; height: 18px;
+  display: flex; align-items: center; gap: 7px;
+  font: 500 12.5px/1 var(--sans); color: var(--c-rules); cursor: pointer;
+  transition: opacity .3s var(--ease);
+}
+.frame .foot svg { width: 14px; height: 14px; fill: none; stroke: var(--c-rules); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.frame .foot:hover { color: var(--ink); }
+.frame.picked { box-shadow: 0 0 0 2.5px var(--gold); background: rgba(255, 255, 255, 0.6); }
+.frame.picked .foot { color: var(--ink); }
+
+/* ---------- bracket under Inputs to Gates ---------- */
+.bracket { position: absolute; top: 1036px; height: 12px; border: 1.5px solid rgba(21, 25, 32, 0.35); border-top: none; border-radius: 0 0 6px 6px; }
+.bracket span { position: absolute; left: 0; right: 0; top: 20px; text-align: center; font: 500 13px/1 var(--display); letter-spacing: 0; color: var(--dim); }
+
+/* ---------- arrows ---------- */
+#wires { position: absolute; left: 0; top: 0; width: 1440px; height: 1124px; overflow: visible; pointer-events: none; }
+#wires path { fill: none; stroke: rgba(21, 25, 32, 0.4); stroke-width: 1.4; }
+#wires path.hot { stroke: var(--gold); stroke-width: 2.1; }
+#wires polygon { fill: rgba(21, 25, 32, 0.55); opacity: 0; transition: opacity .2s var(--ease); }
+#wires polygon.hot { fill: var(--gold); }
+#wires polygon.show { opacity: 1; }
+#wires g.fading { opacity: 0; transition: opacity .3s var(--ease); }
+
+/* ---------- explainer ---------- */
+#tip {
+  position: fixed; z-index: 40; width: 300px; pointer-events: none;
+  background: #fffdf8; border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(21, 25, 32, 0.16); padding: 16px 18px;
+  opacity: 0; transform: translateY(4px); transition: opacity .18s var(--ease), transform .18s var(--ease);
+}
+#tip.show { opacity: 1; transform: none; }
+#tip.sheet { left: 12px !important; right: 12px; top: auto !important; bottom: 12px; width: auto; }
+#tip .over { font: 500 12.5px/1 var(--sans); color: var(--sec); }
+#tip h3 { margin-top: 8px; font: 600 17px/1.25 var(--display); letter-spacing: -0.01em; }
+#tip p { margin-top: 8px; font: 400 14px/1.5 var(--sans); color: var(--ink-soft); }
+#tip ul { margin-top: 10px; padding-left: 16px; font: 400 14px/1.45 var(--sans); color: var(--ink-soft); }
+#tip li + li { margin-top: 4px; }
+#tip .lives { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font: 400 12.5px/1.3 var(--sans); color: var(--dim); }
+#tip .lives b { font-weight: 500; color: var(--ink-soft); }
+
+#fade { position: fixed; top: 0; right: 0; bottom: 0; width: 48px; pointer-events: none; z-index: 20;
+  background: linear-gradient(to right, rgba(243, 239, 228, 0), rgba(235, 230, 216, 0.95)); opacity: 0; transition: opacity .3s; }
+body.narrow #fade.show { opacity: 1; }
+
+body:not(.ready) .node, body:not(.ready) .frame { transition: none; }
+@media (prefers-reduced-motion: reduce) { :root { --t-move: .01s; } #tip, #reset { transition-duration: .01s; } }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="sizer">
+  <div id="stage">
+    <div class="masthead"><h1></h1><p></p><button class="cta" type="button"><span class="play"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.6 L9 5 L1 9.4 Z"/></svg></span><span></span></button></div>
+    <svg id="wires" viewBox="0 0 1440 1124"></svg>
+  </div>
+</div></div>
+<button id="reset" type="button"></button>
+<div id="fade"></div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DATA = {"columns": ["inputs", "context", "gates", "rules", "outputs"], "items": [{"id": "portfolio", "column": "inputs", "group": "voice", "label": "Design Strategy Portfolio", "type": "portfolio", "hover": "Portfolio of work from efforts with Kroger, Delta, Bayer, Dryland Revival, and many other independent efforts from 2019-2024.", "lives_in": "Public Website"}, {"id": "sow", "column": "inputs", "group": "voice", "label": "Statements of Work", "type": "contract", "hover": "Documents from consulting work that say what the problems were and what was delivered.", "lives_in": "Cloud Archive"}, {"id": "transcripts", "column": "inputs", "group": "voice", "label": "Transcripts", "type": "transcript", "hover": "Word-for-word transcripts of interviews where recording consent was requested.", "lives_in": "Obsidian"}, {"id": "appresp", "column": "inputs", "group": "voice", "label": "Application Responses", "type": "application", "hover": "Written answers to application questions, saved exactly as they were submitted.", "lives_in": "Obsidian"}, {"id": "pastjd", "column": "inputs", "group": "arc", "label": "Past Job Descriptions", "type": "history", "hover": "The official descriptions of past roles, including titles and responsibilities.", "lives_in": "Cloud Archive"}, {"id": "jobstories", "column": "inputs", "group": "arc", "label": "Specific Job Stories", "type": "story", "hover": "One detailed file per employer about the work I did and the results.", "lives_in": "Obsidian"}, {"id": "gallup", "column": "inputs", "group": "assess", "label": "Gallup Strengths Assessment", "type": "assessment", "hover": "Ranks 34 talent themes to show where natural strengths are.", "lives_in": "Cloud Archive"}, {"id": "holland", "column": "inputs", "group": "assess", "label": "Holland Code Test", "type": "assessment", "hover": "Sorts work interests into six types to show which work environments fit best.", "lives_in": "Cloud Archive"}, {"id": "careertype", "column": "inputs", "group": "assess", "label": "Career Personality Type", "type": "assessment", "hover": "Matches personality preferences to the roles that tend to suit them.", "lives_in": "Cloud Archive"}, {"id": "big5", "column": "inputs", "group": "assess", "label": "Big 5 Career Choice Test", "type": "assessment", "hover": "Scores the five major personality traits and connects them to career paths.", "lives_in": "Cloud Archive"}, {"id": "rocketfuel", "column": "inputs", "group": "assess", "label": "Rocket Fuel Crystallizer Assessment", "type": "assessment", "hover": "Shows whether someone leans Visionary or Integrator.", "lives_in": "Cloud Archive"}, {"id": "mindtools", "column": "inputs", "group": "assess", "label": "MindTools Leadership Assessment", "type": "assessment", "hover": "Scores leadership skills like setting a vision and managing a team.", "lives_in": "Cloud Archive"}, {"id": "pi", "column": "inputs", "group": "assess", "label": "Predictive Index Assessment", "type": "assessment", "hover": "Measures four work drives: dominance, extraversion, patience, and formality.", "lives_in": "Cloud Archive"}, {"id": "interviewology", "column": "inputs", "group": "assess", "label": "Interviewology Profile", "type": "assessment", "hover": "Identifies which of four interview styles comes naturally (Charmer, Challenger, Examiner, or Harmonizer) and the impression it makes on interviewers.", "lives_in": "Cloud Archive"}, {"id": "reflective", "column": "inputs", "group": "thesis", "label": "Reflective Analysis", "type": "reflection", "hover": "Self-reflection of the shape of my career and skill maturity mean for the future of my work.", "lives_in": "Obsidian"}, {"id": "publicinfo", "column": "inputs", "group": "direct", "label": "Public Information", "type": "web", "hover": "Research on the company and the people doing the interview, pulled from news coverage and public profiles.", "lives_in": "Public URLs"}, {"id": "companyjd", "column": "inputs", "group": "direct", "label": "Company Job Description (JD)", "type": "posting", "hover": "The job posting being applied to. It sets the lane and resume type, and shapes what each output emphasizes.", "lives_in": "Notion"}, {"id": "wsc", "column": "context", "group": "", "label": "Written and Spoken Content", "type": "voice", "hover": "Everything said or written in real interviews (that I have access to) and applications, collected word for word.", "lives_in": "Obsidian"}, {"id": "arc", "column": "context", "group": "", "label": "Career Story Arc", "type": "route", "hover": "The full work history told as one story, including how each role led to the next.", "lives_in": "Obsidian"}, {"id": "assessments", "column": "context", "group": "", "label": "Assessment Results", "type": "results", "hover": "Where the eight assessments agree about strengths and working style.", "lives_in": "Obsidian"}, {"id": "thesis", "column": "context", "group": "", "label": "Career Thesis", "type": "compass", "hover": "The through line of my career in a few plain sentences.", "lives_in": "Obsidian"}, {"id": "star", "column": "gates", "group": "", "label": "STAR Stories", "type": "star", "hover": "Short story cards laid out as situation, task, action, and result, each tagged with the skills, company, and work experience behind it.", "lives_in": "Notion"}, {"id": "perspectives", "column": "gates", "group": "", "label": "Unique Perspectives Doc", "type": "eye", "hover": "Opinions and points of view about the areas of work in which I lead.", "lives_in": "Obsidian"}, {"id": "skillinv", "column": "gates", "group": "", "label": "Skills Inventory", "type": "grid", "hover": "Every approved skill, method, and tool. If a skill isn't listed here, it doesn't go on anything.", "lives_in": "Obsidian"}, {"id": "rot", "column": "gates", "group": "", "label": "Resume of Truth", "type": "seal", "hover": "Every role, title, and bullet in approved wording. All resume content comes from here.", "lives_in": "Obsidian"}, {"id": "fmd", "column": "gates", "group": "", "label": "Fit Map Details", "type": "cards", "hover": "109 evidence cards. Each one ties a capability to specific work and years of experience.", "lives_in": "Obsidian"}, {"id": "summary", "column": "gates", "group": "", "label": "Summary Details", "type": "lines", "hover": "Approved opening lines and 66 proof facts that combine into a resume summary.", "lives_in": "Obsidian"}, {"id": "multipliers", "column": "gates", "group": "", "label": "Multipliers", "type": "sparkle", "hover": "Twelve approved lines about my personality traits and non-career background that influence my ability to show up well in the work environment.", "lives_in": "Obsidian"}, {"id": "r_lane", "column": "rules", "group": "Resume", "label": "Select a lane", "type": "rule", "hover": "Select a lane (Service Design, Transformation & Implementation, AI Enablement, Product) before building. A JD that is outside of my expertise gets flagged.", "lives_in": "Claude Skills"}, {"id": "r_type", "column": "rules", "group": "Resume", "label": "Standard or extended resume", "type": "rule", "hover": "Standard or extended resume: Product, my least clear qualifications is always an extended resume to show product experience depth. Roles with team leadership capabilities get extended resumes, everything else is standard at 3 pages.", "lives_in": "Claude Skills"}, {"id": "r_baseline", "column": "rules", "group": "Resume", "label": "Start from a lane baseline", "type": "rule", "hover": "Work starts from a pre-built lane baseline resume where skills, multipliers, summary, and bullets on an extended resume are adjusted to match accurately between my experience and the JD's ask without overstating my qualifications.", "lives_in": "Claude Skills"}, {"id": "r_traces", "column": "rules", "group": "Resume", "label": "Every word traces to a gate", "type": "rule", "hover": "Every word traces to a gate, staying verbatim in my approved content and voice; new wording needs my approval.", "lives_in": "Claude Skills"}, {"id": "r_skills", "column": "rules", "group": "Resume", "label": "Skills only from the Skills Inventory", "type": "rule", "hover": "Skills come only from the Skills Inventory, spelled the way the JD spells them.", "lives_in": "Claude Skills"}, {"id": "r_summary", "column": "rules", "group": "Resume", "label": "Summary: one opener plus one proof", "type": "rule", "hover": "Summary: one opener plus one proof mix-and-match from the Summary Details gate, one metric max as to not crowd the paragraph and be too redundant.", "lives_in": "Claude Skills"}, {"id": "r_mult", "column": "rules", "group": "Resume", "label": "Multipliers: 4 to 6", "type": "rule", "hover": "Multipliers: 4 to 6 selected from 12 options of approved multipliers in my voice and matched to the personality expectation of the JD.", "lives_in": "Claude Skills"}, {"id": "r_first", "column": "rules", "group": "Interview Prep", "label": "Written in first person", "type": "rule", "hover": "Written in first person.", "lives_in": "Claude Skills"}, {"id": "r_bullets", "column": "rules", "group": "Interview Prep", "label": "Bullets only", "type": "rule", "hover": "Bullets only. Bullets are 5-7 or 7-10 words each.", "lives_in": "Claude Skills"}, {"id": "r_nocoach", "column": "rules", "group": "Interview Prep", "label": "No coaching", "type": "rule", "hover": "No coaching.", "lives_in": "Claude Skills"}, {"id": "r_stories", "column": "rules", "group": "Interview Prep", "label": "STAR stories chosen fresh per JD", "type": "rule", "hover": "Relevant STAR stories chosen fresh per JD, one per distinct demand of the role.", "lives_in": "Claude Skills"}, {"id": "r_words", "column": "rules", "group": "Interview Prep", "label": "My words copied exactly", "type": "rule", "hover": "Where possible, my words are copied exactly, never synthesized.", "lives_in": "Claude Skills"}, {"id": "r_fit", "column": "rules", "group": "Maps", "label": "Fit maps use evidence cards", "type": "rule", "hover": "Fit maps use evidence cards from Fit Map Details matched to the JD; nothing invented.", "lives_in": "Claude Skills"}, {"id": "r_skillsmap", "column": "rules", "group": "Maps", "label": "Skills Map covers the complete skill set", "type": "rule", "hover": "The Skills Map covers your complete skill set, not tailored to any JD.", "lives_in": "Claude Skills"}, {"id": "std", "column": "outputs", "group": "Resume", "label": "Standard Resume", "type": "resume", "hover": "A three-page resume tailored to one job description. One for each of four possible career lanes.", "lives_in": "PDF"}, {"id": "ext", "column": "outputs", "group": "Resume", "label": "Extended Resume", "type": "resume_ext", "hover": "A four-page resume that adds depth from earlier roles. One for each of four possible career lanes.", "lives_in": "PDF"}, {"id": "ip", "column": "outputs", "group": "Interview Prep", "label": "Interview Prep Page", "type": "notebook", "hover": "One page to read before an interview, covering the role, the people, likely questions, stories to be ready to show, and any career details that should be surfaced to share.", "lives_in": "Notion"}, {"id": "fitmap", "column": "outputs", "group": "Maps", "label": "Fit Map", "type": "target", "hover": "An interactive experience built per company upon their job description, matching my real life work experience to their role expectations.", "lives_in": "GitHub Website"}, {"id": "skillsmap", "column": "outputs", "group": "Maps", "label": "Skills Map", "type": "constellation", "hover": "An interactive map of my complete skill set. Every skill links to evidence from real work.", "lives_in": "GitHub Website"}, {"id": "linkedin", "column": "outputs", "group": "", "label": "LinkedIn", "type": "profile", "hover": "My public professional profile.", "lives_in": "LinkedIn"}, {"id": "cover", "column": "outputs", "group": "", "label": "Cover Letter", "type": "letter", "hover": "A letter written for one specific role.", "lives_in": "PDF"}, {"id": "leave", "column": "outputs", "group": "final", "label": "Leave Behinds", "type": "send", "hover": "Personalized \"bonuses\" created on a case-by-case basis for employers I am interested in. Designed to be shared before or after interviews, dependent on the output.", "lives_in": "GitHub Website"}], "edges": [["portfolio", "wsc", 0.2], ["sow", "wsc", 0.1], ["transcripts", "wsc", 0.4], ["appresp", "wsc", 0.3], ["pastjd", "arc", 0.3], ["jobstories", "arc", 0.7], ["gallup", "assessments", 0.3], ["holland", "assessments", 0.1], ["careertype", "assessments", 0.1], ["big5", "assessments", 0.1], ["rocketfuel", "assessments", 0.1], ["mindtools", "assessments", 0.1], ["pi", "assessments", 0.1], ["interviewology", "assessments", 0.1], ["reflective", "thesis", 1.0], ["publicinfo", "ip", 0.2], ["companyjd", "std", 0.2], ["companyjd", "ext", 0.2], ["companyjd", "cover", 0.2], ["companyjd", "fitmap", 0.3], ["companyjd", "ip", 0.3], ["wsc", "star", 0.7], ["wsc", "perspectives", 0.7], ["wsc", "rot", 0.2], ["wsc", "fmd", 0.8], ["arc", "star", 0.3], ["arc", "skillinv", 1.0], ["arc", "rot", 0.8], ["arc", "summary", 0.9], ["assessments", "perspectives", 0.1], ["assessments", "multipliers", 1.0], ["thesis", "perspectives", 0.2], ["thesis", "fmd", 0.2], ["thesis", "summary", 0.1], ["star", "ip", 0.15], ["perspectives", "cover", 0.4], ["perspectives", "ip", 0.1], ["perspectives", "linkedin", 0.1], ["perspectives", "leave", 0.1], ["skillinv", "skillsmap", 0.5], ["skillinv", "fitmap", 0.1], ["skillinv", "std", 0.2], ["skillinv", "ext", 0.1], ["skillinv", "linkedin", 0.2], ["rot", "skillsmap", 0.1], ["rot", "fitmap", 0.1], ["rot", "std", 0.4], ["rot", "ext", 0.5], ["rot", "cover", 0.3], ["rot", "ip", 0.1], ["rot", "linkedin", 0.4], ["fmd", "skillsmap", 0.3], ["fmd", "fitmap", 0.4], ["fmd", "ip", 0.05], ["summary", "linkedin", 0.3], ["summary", "std", 0.1], ["summary", "ext", 0.1], ["summary", "skillsmap", 0.1], ["summary", "fitmap", 0.1], ["summary", "ip", 0.05], ["multipliers", "std", 0.1], ["multipliers", "ext", 0.1], ["multipliers", "cover", 0.1], ["multipliers", "ip", 0.05], ["skillsmap", "leave", 0.3], ["fitmap", "leave", 0.3], ["ext", "leave", 0.3], ["companyjd", "r_lane", null], ["companyjd", "r_type", null], ["companyjd", "r_baseline", null], ["companyjd", "r_skills", null], ["companyjd", "r_mult", null], ["companyjd", "r_stories", null], ["companyjd", "r_fit", null], ["skillinv", "r_baseline", null], ["multipliers", "r_baseline", null], ["summary", "r_baseline", null], ["rot", "r_baseline", null], ["skillinv", "r_skills", null], ["summary", "r_summary", null], ["multipliers", "r_mult", null], ["star", "r_stories", null], ["fmd", "r_fit", null], ["r_lane", "std", null], ["r_lane", "ext", null], ["r_type", "std", null], ["r_type", "ext", null], ["r_baseline", "std", null], ["r_baseline", "ext", null], ["r_traces", "std", null], ["r_traces", "ext", null], ["r_skills", "std", null], ["r_skills", "ext", null], ["r_summary", "std", null], ["r_summary", "ext", null], ["r_mult", "std", null], ["r_mult", "ext", null], ["r_first", "ip", null], ["r_bullets", "ip", null], ["r_nocoach", "ip", null], ["r_stories", "ip", null], ["r_words", "ip", null], ["r_fit", "fitmap", null], ["r_skillsmap", "skillsmap", null]], "copy": {"page_title": "Ryan Hance's Career Knowledge Architecture", "page_prompt": "Select any card to see the underlying information architecture. This is an example of a complex knowledge management system built for both human and agent ease of information retrieval and decision making.", "reset_button": "Deselect", "col_inputs": "Inputs", "col_context": "Context", "col_gates": "Gates", "col_rules": "Rules", "col_outputs": "Outputs", "col_inputs_hover": "Source content.", "col_context_hover": "Easily navigable information stores that contextualize source content for reference.", "col_gates_hover": "Approved sources for Outputs, written in my voice. Everything in an Output has to come from one of these, verbatim.", "col_rules_hover": "How each output gets built from the gates.", "col_outputs_hover": "Anything that might be seen by someone other than me.", "rules_count": "Governance: {n} Rules", "bracket_label": "Knowledge Management System", "lives_source_label": "Source Location", "lives_output_label": "Output Location", "cta_resume": "Show me how a resume gets built."}, "icons": {"portfolio": "<rect x='2' y='7' width='20' height='14' rx='2'/><path d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/><path d='M2 13h20'/>", "contract": "<path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><path d='M14 2v6h6'/><path d='M8 9h2'/><path d='M8 13h8'/><path d='M8 18c1-1.4 2-1.4 2.5 0s1.5 1.4 2.5 0 1.5-1 3 0'/>", "transcript": "<path d='M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z'/><path d='M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1'/>", "application": "<path d='M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'/><path d='M18.4 2.6a2.1 2.1 0 1 1 3 3L12 15l-4 1 1-4z'/>", "history": "<path d='M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/><path d='M3 3v5h5'/><path d='M12 7v5l4 2'/>", "story": "<path d='M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z'/><path d='M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z'/>", "assessment": "<rect x='8' y='2' width='8' height='4' rx='1'/><path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/><path d='m9 14 2 2 4-4'/>", "reflection": "<path d='M9 18h6'/><path d='M10 22h4'/><path d='M15.1 14c.2-1 .7-1.7 1.4-2.5A4.6 4.6 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/>", "web": "<circle cx='12' cy='12' r='10'/><path d='M2 12h20'/><path d='M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10A15 15 0 0 1 12 2z'/>", "posting": "<path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h5'/><path d='M14 2v6h6'/><path d='M20 8v3'/><circle cx='16.5' cy='16.5' r='3'/><path d='m21 21-2.2-2.2'/>", "voice": "<path d='M3 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2H4c-1.25 0-2 .75-2 1.97V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .01-1 1.03V20c0 1 0 1 1 1z'/><path d='M15 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2h-4c-1.25 0-2 .75-2 1.97V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z'/>", "route": "<circle cx='6' cy='19' r='3'/><path d='M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15'/><circle cx='18' cy='5' r='3'/>", "results": "<path d='M3 3v18h18'/><path d='M8 17v-6'/><path d='M13 17V6'/><path d='M18 17v-4'/>", "compass": "<circle cx='12' cy='12' r='10'/><polygon points='16.2,7.8 14.1,14.1 7.8,16.2 9.9,9.9'/>", "star": "<polygon points='12,2 15.1,8.3 22,9.3 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.3 8.9,8.3'/>", "eye": "<path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z'/><circle cx='12' cy='12' r='3'/>", "grid": "<rect x='3' y='3' width='7' height='7' rx='1'/><rect x='14' y='3' width='7' height='7' rx='1'/><rect x='3' y='14' width='7' height='7' rx='1'/><rect x='14' y='14' width='7' height='7' rx='1'/>", "seal": "<path d='M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.7 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z'/><path d='m9 12 2 2 4-4'/>", "cards": "<rect x='3' y='7' width='14' height='14' rx='2'/><path d='M7 3h12a2 2 0 0 1 2 2v12'/>", "lines": "<path d='M4 6h16'/><path d='M4 10h16'/><path d='M4 14h11'/><path d='M4 18h7'/>", "sparkle": "<path d='M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z'/><path d='M19 3v4'/><path d='M17 5h4'/><path d='M5 17v4'/><path d='M3 19h4'/>", "rule": "<path d='M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z'/><path d='M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z'/><path d='M7 21h10'/><path d='M12 3v18'/><path d='M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2'/>", "constellation": "<circle cx='5' cy='6' r='2'/><circle cx='18' cy='5' r='2'/><circle cx='12' cy='13' r='2'/><circle cx='6' cy='19' r='2'/><circle cx='19' cy='18' r='2'/><path d='M6.7 7.1l3.8 4.4M16.4 6.3l-3.2 5M10.6 14.4l-3.2 3.3M13.7 14l3.8 2.8'/>", "target": "<circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/>", "resume": "<path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><path d='M14 2v6h6'/><path d='M16 13H8'/><path d='M16 17H8'/><path d='M10 9H8'/>", "resume_ext": "<path d='M16 2H9a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z'/><path d='M16 2v5h5'/><path d='M4 7v13a2 2 0 0 0 2 2h10'/><path d='M11 11h6'/><path d='M11 14h6'/>", "notebook": "<rect x='5' y='2' width='15' height='20' rx='2'/><path d='M2 6h4'/><path d='M2 10h4'/><path d='M2 14h4'/><path d='M2 18h4'/><path d='M10 8h6'/><path d='M10 12h6'/>", "profile": "<rect x='2' y='4' width='20' height='16' rx='2'/><circle cx='9' cy='10' r='2'/><path d='M5.5 16c.6-1.8 2-2.5 3.5-2.5s2.9.7 3.5 2.5'/><path d='M15 9h4'/><path d='M15 13h3'/>", "letter": "<rect x='2' y='4' width='20' height='16' rx='2'/><path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/>", "send": "<path d='M22 2 11 13'/><path d='M22 2l-7 20-4-9-9-4z'/>"}};
+
+(function () {
+  const W = 1440, H = 1124;
+  const TOP = 260, BOTTOM = 996, MID = (TOP + BOTTOM) / 2;
+  const IDLE_MS = 30000;
+
+  // One card size everywhere. Columns are spaced evenly.
+  const CW = 208, CH = 56, PILL = 28, PILL_STEP = 32, ROW = 34, ROW_STEP = 38, FPAD = 10, FOOT = 34;
+  const GAP_IN = 12;                          // between the two input columns
+  // Spacing system: 58px page margin, 28px padding inside each column, 16px gutters between columns.
+  const LANE_PAD = 28, LANE_GAP = 16, EDGE = 58, GAP_IN0 = 12;
+  const X = {};
+  X.inputs = EDGE + LANE_PAD;
+  X.context = X.inputs + CW * 2 + GAP_IN0 + LANE_PAD * 2 + LANE_GAP;
+  X.gates = X.context + CW + LANE_PAD * 2 + LANE_GAP;
+  X.outputs = X.gates + CW + LANE_PAD * 2 + LANE_GAP;
+  const RIGHT_EDGE = X.outputs + CW + LANE_PAD;
+  const INPUT_W = CW * 2 + GAP_IN;
+  const SLOTS = ["inputs", "context", "gates", "outputs"];
+  // Reveal order. Leave Behinds sits in Outputs but lights up after the outputs that feed it.
+  const STAGES = ["inputs", "context", "gates", "outputs", "after"];
+  const stageOf = it => it.group === "final" ? "after" : it.slot;
+
+  const stage = document.getElementById("stage");
+  const wires = document.getElementById("wires");
+  const tip = document.getElementById("tip");
+  const resetBtn = document.getElementById("reset");
+  const fadeEl = document.getElementById("fade");
+  const vp = document.getElementById("viewport");
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const RULE_ICON = DATA.icons.rule;
+  const INFO_ICON = "<circle cx='12' cy='12' r='9.5'/><path d='M12 16.5v-5'/><path d='M12 8h.01'/>";
+
+  stage.querySelector(".masthead h1").textContent = DATA.copy.page_title;
+  stage.querySelector(".masthead p").textContent = DATA.copy.page_prompt;
+  resetBtn.textContent = DATA.copy.reset_button;
+  // "Show me how a resume gets built": plays the Standard Resume trace.
+  const cta = stage.querySelector(".masthead .cta");
+  cta.querySelector("span:last-child").textContent = DATA.copy.cta_resume;
+  cta.addEventListener("click", ev => {
+    ev.stopPropagation();
+    hideTip();
+    if (current !== "std") select("std");
+  });
+
+  // ---------- model ----------
+  const byId = {};
+  DATA.items.forEach((it, i) => {
+    it.order = i;
+    it.slot = it.column;
+    byId[it.id] = it;
+  });
+  const outs = {}, ins = {};
+  DATA.items.forEach(it => { outs[it.id] = []; ins[it.id] = []; });
+  DATA.edges.forEach(([a, b]) => { outs[a].push(b); ins[b].push(a); });
+  const isRule = id => byId[id].column === "rules";
+  const rules = DATA.items.filter(it => isRule(it.id));
+  const attached = rules.filter(r => ins[r.id].length === 0).map(r => r.id);
+
+  // Output frames: one per rule group, holding the outputs of the same name.
+  const frames = [];
+  rules.forEach(r => { if (!frames.find(f => f.name === r.group)) frames.push({ name: r.group }); });
+  frames.forEach(f => {
+    f.members = DATA.items.filter(it => it.column === "outputs" && it.group === f.name).map(it => it.id);
+    f.rules = rules.filter(r => r.group === f.name).map(r => r.id);
+  });
+  const frameOf = id => frames.find(f => f.members.includes(id) || f.rules.includes(id));
+
+  // Influence weights: W8["a>b"] is the share of b that comes from a.
+  const W8 = {};
+  DATA.edges.forEach(([a, b, w]) => { if (w != null) W8[a + ">" + b] = w; });
+  const shareMemo = {};
+  function share(x, t) {          // share of t that traces back to x
+    if (x === t) return 1;
+    const k = x + ">>" + t;
+    if (k in shareMemo) return shareMemo[k];
+    let s = 0;
+    outs[x].forEach(y => { const w = W8[x + ">" + y]; if (w) s += w * share(y, t); });
+    return (shareMemo[k] = s);
+  }
+  const DRAW_MS = 800;
+
+  function walk(start, next) {
+    const seen = new Set(), stack = [start];
+    while (stack.length) {
+      const n = stack.pop();
+      for (const m of next[n]) if (!seen.has(m)) { seen.add(m); stack.push(m); }
+    }
+    return seen;
+  }
+
+  function trace(id) {
+    if (id.startsWith("g:")) return traceGroup(frames.find(f => f.name === id.slice(2)));
+    const up = walk(id, ins), down = walk(id, outs);
+    const lit = new Set([id, ...up, ...down]);
+    if (!isRule(id)) attached.forEach(r => { if (outs[r].some(o => lit.has(o))) lit.add(r); });
+    const inA = x => x === id || up.has(x), inD = x => x === id || down.has(x);
+    // Rules sit inside the outputs, so arrows only run between cards.
+    const edges = DATA.edges.filter(([a, b]) => !isRule(a) && !isRule(b) && ((inA(a) && inA(b)) || (inD(a) && inD(b))));
+    if (isRule(id)) {
+      ins[id].forEach(a => outs[id].forEach(b => { if (outs[a].includes(b)) edges.push([a, b]); }));
+    }
+    return { lit, edges, up, down, self: new Set([id]) };
+  }
+
+  // A rules footer: light up everything that feeds that group's rules, and the outputs they govern.
+  function traceGroup(f) {
+    const up = new Set(), down = new Set(), bridge = [];
+    f.rules.forEach(r => {
+      walk(r, ins).forEach(x => up.add(x));
+      walk(r, outs).forEach(x => down.add(x));
+      ins[r].forEach(a => outs[r].forEach(b => { if (outs[a].includes(b)) bridge.push([a, b]); }));
+    });
+    const lit = new Set([...up, ...down, ...f.rules]);
+    const edges = DATA.edges.filter(([a, b]) => !isRule(a) && !isRule(b) && ((up.has(a) && up.has(b)) || (down.has(a) && down.has(b))));
+    bridge.forEach(e => { e.hot = true; edges.push(e); });
+    return { lit, edges, up, down, self: new Set(f.members) };
+  }
+
+  // ---------- build ----------
+  const HEADS = { inputs: "col_inputs", context: "col_context", gates: "col_gates", outputs: "col_outputs" };
+  const laneX = { inputs: [X.inputs, INPUT_W], context: [X.context, CW], gates: [X.gates, CW], outputs: [X.outputs, CW] };
+  Object.entries(laneX).forEach(([k, [x, w]]) => {
+    const lane = document.createElement("div");
+    lane.className = "lane s-" + k;
+    lane.style.left = x - LANE_PAD + "px";
+    lane.style.width = w + LANE_PAD * 2 + "px";
+    stage.insertBefore(lane, wires);
+  });
+  {
+    const br = document.createElement("div");
+    br.className = "bracket";
+    br.style.left = X.inputs - LANE_PAD + "px";
+    br.style.width = X.gates + CW + LANE_PAD - (X.inputs - LANE_PAD) + "px";
+    br.innerHTML = "<span></span>";
+    br.querySelector("span").textContent = DATA.copy.bracket_label;
+    stage.appendChild(br);
+  }
+  Object.keys(HEADS).forEach(c => {
+    const h = document.createElement("div");
+    h.className = "colhead s-" + c;
+    h.style.left = X[c] + "px";
+    h.innerHTML = `<span></span><svg viewBox="0 0 24 24" aria-hidden="true">${INFO_ICON}</svg>`;
+    h.querySelector("span").textContent = DATA.copy[HEADS[c]];
+    const t = () => ({ title: DATA.copy[HEADS[c]], body: DATA.copy[HEADS[c] + "_hover"], sec: c });
+    h.addEventListener("mouseenter", () => hoverTip(h, t()));
+    h.addEventListener("mouseleave", () => { if (!touching) hideTip(); });
+    h.addEventListener("click", ev => { ev.stopPropagation(); showTip(h, t()); });
+    stage.appendChild(h);
+  });
+
+  const frameEls = {};
+  frames.forEach(f => {
+    const d = document.createElement("div");
+    d.className = "frame";
+    d.innerHTML = `<div class="foot"><svg viewBox="0 0 24 24" aria-hidden="true">${RULE_ICON}</svg><span></span></div>`;
+    d.querySelector("span").textContent = DATA.copy.rules_count.replace("{n}", f.rules.length);
+    const foot = d.querySelector(".foot");
+    const t = () => ({
+      over: DATA.copy.col_rules, title: f.name, sec: "rules",
+      list: f.rules.map(r => byId[r].hover), lives: byId[f.rules[0]].lives_in, livesLabel: DATA.copy.lives_source_label,
+    });
+    foot.addEventListener("mouseenter", () => hoverTip(foot, t()));
+    foot.addEventListener("mouseleave", () => { if (!touching) hideTip(); });
+    foot.addEventListener("click", ev => {
+      ev.stopPropagation();
+      const again = current === "g:" + f.name;
+      muteHover(ev);
+      hideTip();
+      select("g:" + f.name);
+      if (ev.pointerType !== "mouse" && !again) later(() => showTip(foot, t()), REDUCED ? 0 : 700);
+    });
+    stage.insertBefore(d, wires);
+    frameEls[f.name] = d;
+  });
+
+  let touching = false;
+  addEventListener("pointerdown", e => { touching = e.pointerType === "touch"; }, true);
+
+  const els = {};
+  DATA.items.forEach(it => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "node s-" + it.column + (isRule(it.id) ? " rule hidden" : "");
+    b.innerHTML = `<span class="chip"><svg viewBox="0 0 24 24" aria-hidden="true">${DATA.icons[it.type]}</svg></span><span class="label"></span>`;
+    b.querySelector(".label").textContent = it.label;
+    b.setAttribute("aria-label", it.label);
+    b.addEventListener("mouseenter", () => hoverTip(b, tipFor(it)));
+    b.addEventListener("mouseleave", () => { if (!touching) hideTip(); });
+    b.addEventListener("focus", () => { if (!clickedRecently) showTip(b, tipFor(it)); });
+    b.addEventListener("blur", hideTip);
+    b.addEventListener("click", ev => {
+      ev.stopPropagation();
+      const again = current === it.id;
+      muteHover(ev);
+      hideTip();
+      select(it.id);
+      // Touch and keyboard have no hover: show the explainer once the card settles.
+      if (ev.pointerType !== "mouse" && !again) later(() => showTip(b, tipFor(it)), REDUCED ? 0 : 700);
+    });
+    stage.appendChild(b);
+    els[it.id] = b;
+  });
+
+  // ---------- layout ----------
+  const pos = {};        // id -> {x, y, w, h, pill, hidden}
+  const fpos = {};       // frame name -> {x, y, w, h, open, gone}
+  const place = (id, x, y, o = {}) => { pos[id] = { x, y, w: o.w || CW, h: o.h || CH, pill: !!o.pill, hidden: !!o.hidden }; };
+  const mid = id => pos[id].y + pos[id].h / 2;
+  const avg = a => a.length ? a.reduce((s, v) => s + v, 0) / a.length : MID;
+  const inCol = slot => DATA.items.filter(it => it.slot === slot);
+
+  function clustersOf(list) {
+    const cs = [];
+    list.forEach(it => {
+      let c = cs.find(c => c.name === it.group);
+      if (!c) cs.push(c = { name: it.group, items: [] });
+      c.items.push(it);
+    });
+    return cs;
+  }
+  // Two across only when both cards feed the same place.
+  const acrossFor = c => {
+    const t = c.items.map(it => outs[it.id].slice().sort().join());
+    return t.every(x => x === t[0]) ? 2 : 1;
+  };
+
+  function restLayout() {
+    // Inputs
+    const cs = clustersOf(inCol("inputs")), step = CH + 10, cGap = 18;
+    const rows = cs.reduce((n, c) => n + Math.ceil(c.items.length / acrossFor(c)), 0);
+    let y = MID - (rows * step - 10 + (cs.length - 1) * cGap) / 2;
+    cs.forEach(c => {
+      const n = acrossFor(c);
+      c.items.forEach((it, i) => place(it.id, X.inputs + (i % n) * (CW + GAP_IN), y + Math.floor(i / n) * step));
+      y += Math.ceil(c.items.length / n) * step + cGap;
+    });
+    // Context sits beside what feeds it
+    inCol("context").forEach(it => place(it.id, X.context, avg(ins[it.id].map(mid)) - CH / 2));
+    // Gates spread evenly, ordered to limit crossings
+    const gates = inCol("gates").map(it => ({ it, w: avg(ins[it.id].map(mid)) })).sort((a, b) => a.w - b.w);
+    spreadEven(gates.map(g => g.it.id), X.gates, 94);
+    // Outputs: frames and single cards
+    stackUnits(outputUnits(null), MID);
+  }
+
+  function spreadEven(ids, x, maxStep) {
+    const step = Math.min(maxStep, (BOTTOM - TOP) / ids.length);
+    const y0 = MID - ((ids.length - 1) * step + CH) / 2;
+    ids.forEach((id, i) => place(id, x, y0 + i * step));
+  }
+
+  // A unit is one output card, or a frame holding outputs (and, when open, their rules).
+  function outputUnits(lit, sizes) {
+    const s = sizes || SIZES[0];
+    const units = [], used = new Set();
+    inCol("outputs").forEach(it => {
+      if (used.has(it.id)) return;
+      if (lit && !lit.has(it.id)) return;
+      const f = frameOf(it.id);
+      if (f) {
+        const members = f.members.filter(m => !lit || lit.has(m));
+        members.forEach(m => used.add(m));
+        const shown = [];   // rules stay wrapped; the footer carries them
+        const body = members.length * s.ch + (members.length - 1) * 8;
+        const h = s.pad + body + (shown.length ? s.pad - 2 + shown.length * s.rowStep - (s.rowStep - s.row) : FOOT) + s.pad;
+        units.push({ frame: f, members, shown, h, s, weight: avg(members.flatMap(m => ins[m].filter(g => byId[g].column === "gates").map(mid))) });
+      } else {
+        used.add(it.id);
+        units.push({ id: it.id, h: s.ch, s, weight: avg(ins[it.id].filter(g => byId[g].column === "gates").map(mid)) });
+      }
+    });
+    return units;
+  }
+
+  // Three spacing tiers; the tightest that isn't needed is never used.
+  const SIZES = [
+    { ch: CH, row: ROW, rowStep: ROW_STEP, pad: FPAD, gap: 18 },
+    { ch: 46, row: 30, rowStep: 33, pad: FPAD, gap: 16 },
+    { ch: 46, row: 30, rowStep: 32, pad: 8, gap: 12 },
+    { ch: 40, row: 28, rowStep: 30, pad: 8, gap: 12 },
+  ];
+  const unitsHeight = us => us.reduce((t, u) => t + u.h, 0) + (us.length - 1) * (us[0] ? us[0].s.gap : 0);
+  function stackUnits(units, centerY, top) {
+    const gap = units[0] ? units[0].s.gap : 18;
+    const total = unitsHeight(units);
+    if (top == null) top = centerY - total / 2;
+    let y = top;
+    frames.forEach(f => {
+      if (!units.some(u => u.frame === f)) fpos[f.name] = { ...(fpos[f.name] || { x: X.outputs - FPAD, y: MID, w: CW + FPAD * 2, h: 40 }), gone: true, open: false };
+      f.rules.forEach(r => { if (!pos[r] || !units.some(u => u.frame === f && u.shown.includes(r))) place(r, X.outputs, (fpos[f.name] ? fpos[f.name].y : MID) + 20, { h: ROW, hidden: true }); });
+    });
+    units.forEach(u => {
+      if (u.frame) {
+        let yy = y + u.s.pad;
+        u.members.forEach(m => { place(m, X.outputs, yy, { h: u.s.ch }); yy += u.s.ch + 8; });
+        if (u.shown.length) yy += u.s.pad - 2 - 8;
+        u.shown.forEach(r => { place(r, X.outputs, yy, { h: u.s.row }); yy += u.s.rowStep; });
+        fpos[u.frame.name] = { x: X.outputs - FPAD, y, w: CW + FPAD * 2, h: u.h, open: u.shown.length > 0, gone: false };
+      } else {
+        place(u.id, X.outputs, y, { h: u.s.ch });
+      }
+      y += u.h + gap;
+    });
+    return { top, bottom: top + total };
+  }
+
+  // Faded cards become pills stacked above and below what's lit.
+  function stackPills(list, x0, across, top, bottom, restOrder) {
+    if (!list.length) return;
+    const litMid = restOrder.mid;
+    const above = list.filter(it => restOrder.rank(it) < litMid);
+    const below = list.filter(it => restOrder.rank(it) >= litMid);
+    const put = (arr, dir) => {
+      const rows = Math.ceil(arr.length / across);
+      arr.forEach((it, i) => {
+        const row = Math.floor(i / across), col = i % across;
+        const x = x0 + col * (CW + GAP_IN);
+        const y = dir < 0 ? top - 24 - PILL - (rows - 1 - row) * PILL_STEP : bottom + 24 + row * PILL_STEP;
+        place(it.id, x, y, { h: PILL, pill: true });
+      });
+    };
+    put(above, -1);
+    put(below, 1);
+  }
+  // Lay a column out as one stack: pills above, the lit block, pills below, always inside the column.
+  function layColumn(off, across, x0, blockH, placeBlock, oi) {
+    const above = off.filter(it => oi.rank(it) < oi.mid), below = off.filter(it => oi.rank(it) >= oi.mid);
+    const hOf = n => n ? Math.ceil(n / across) * PILL_STEP - (PILL_STEP - PILL) + 24 : 0;
+    const total = hOf(above.length) + blockH + hOf(below.length);
+    const top = Math.max(TOP, Math.min(MID - total / 2, BOTTOM - total));
+    const put = (arr, y0) => arr.forEach((it, i) => place(it.id, x0 + (i % across) * (CW + GAP_IN), y0 + Math.floor(i / across) * PILL_STEP, { h: PILL, pill: true }));
+    put(above, top);
+    const blockTop = top + hOf(above.length);
+    placeBlock(blockTop);
+    put(below, blockTop + blockH + 24);
+  }
+  function pillsFromTop(list, x0, across) {
+    list.forEach((it, i) => place(it.id, x0 + (i % across) * (CW + GAP_IN), TOP + Math.floor(i / across) * PILL_STEP, { h: PILL, pill: true }));
+  }
+
+  function traceLayout(lit) {
+    restLayout();
+    const rest = {};
+    Object.keys(pos).forEach(k => rest[k] = { ...pos[k] });
+    const rankOf = it => rest[it.id].y * 10 + rest[it.id].x / 1000;
+    const orderInfo = on => ({ mid: avg(on.map(rankOf)), rank: rankOf });
+
+    // Inputs: one column when it fits; otherwise a brick layout so every arrow has a clear lane.
+    {
+      const all = inCol("inputs").slice().sort((a, b) => rankOf(a) - rankOf(b));
+      const on = all.filter(it => lit.has(it.id)), off = all.filter(it => !lit.has(it.id));
+      if (!on.length) pillsFromTop(off, X.inputs, 2);
+      else if (on.length <= 8) {
+        const step = CH + 10;
+        layColumn(off, 2, X.inputs, on.length * step - 10,
+          top => on.forEach((it, i) => place(it.id, X.inputs + (INPUT_W - CW) / 2, top + i * step)), orderInfo(on));
+      } else {
+        const step = CH + 8, half = step / 2, rows = Math.ceil(on.length / 2);
+        layColumn(off, 2, X.inputs, rows * step - 8 + half, top => on.forEach((it, i) => {
+          const col = i % 2, row = Math.floor(i / 2);
+          place(it.id, X.inputs + col * (CW + GAP_IN), top + row * step + col * half);
+        }), orderInfo(on));
+      }
+    }
+
+    // Context and gates: lit cards centered, the rest as pills
+    ["context", "gates"].forEach(slot => {
+      const all = inCol(slot).slice().sort((a, b) => rankOf(a) - rankOf(b));
+      const on = all.filter(it => lit.has(it.id)), off = all.filter(it => !lit.has(it.id));
+      if (!on.length) { pillsFromTop(off, X[slot], 1); return; }
+      const step = CH + 12;
+      layColumn(off, 1, X[slot], on.length * step - 12, top => on.forEach((it, i) => place(it.id, X[slot], top + i * step)), orderInfo(on));
+    });
+
+    // Outputs: lit frames and cards centered, faded outputs as pills
+    {
+      const all = inCol("outputs").slice().sort((a, b) => rankOf(a) - rankOf(b));
+      const on = all.filter(it => lit.has(it.id)), off = all.filter(it => !lit.has(it.id));
+      if (!on.length) {
+        frames.forEach(f => { fpos[f.name] = { ...fpos[f.name], gone: true, open: false }; f.rules.forEach(r => place(r, X.outputs, fpos[f.name].y + 20, { h: ROW, hidden: true })); });
+        pillsFromTop(off, X.outputs, 1);
+      } else {
+        const order = u => avg((u.members || [u.id]).map(m => rankOf(byId[m])));
+        const oi = orderInfo(on);
+        const above = off.filter(it => oi.rank(it) < oi.mid), below = off.filter(it => oi.rank(it) >= oi.mid);
+        let pg = 24;
+        const pillsH = n => n ? n * PILL_STEP - (PILL_STEP - PILL) + pg : 0;
+        const need = us => pillsH(above.length) + unitsHeight(us) + pillsH(below.length);
+        let units;
+        for (const sz of SIZES) {
+          units = outputUnits(lit, sz).sort((a, b) => order(a) - order(b));
+          if (need(units) <= BOTTOM - TOP) break;
+        }
+        if (need(units) > BOTTOM - TOP) pg = 10;
+        const total = need(units);
+        let y = Math.max(TOP, Math.min(MID - total / 2, BOTTOM - total));
+        above.forEach(it => { place(it.id, X.outputs, y, { h: PILL, pill: true }); y += PILL_STEP; });
+        if (above.length) y += pg - (PILL_STEP - PILL);
+        const span = stackUnits(units, 0, y);
+        y = span.bottom + (below.length ? pg : 0);
+        below.forEach(it => { place(it.id, X.outputs, y, { h: PILL, pill: true }); y += PILL_STEP; });
+      }
+    }
+
+  }
+
+  function render() {
+    DATA.items.forEach(it => {
+      const p = pos[it.id], e = els[it.id];
+      e.style.transform = `translate(${p.x}px, ${p.y}px)`;
+      e.style.width = p.w + "px";
+      e.style.height = p.h + "px";
+      e.classList.toggle("pill", p.pill);
+      e.classList.toggle("hidden", p.hidden);
+    });
+    frames.forEach(f => {
+      const p = fpos[f.name], e = frameEls[f.name];
+      e.style.transform = `translate(${p.x}px, ${p.y}px)`;
+      e.style.width = p.w + "px";
+      e.style.height = p.h + "px";
+      e.classList.toggle("gone", !!p.gone);
+      e.classList.toggle("open", !!p.open);
+    });
+  }
+
+  // ---------- arrows ----------
+  // Everything visible in a column, so arrows that skip a column can go around it.
+  function obstacles(slot) {
+    const list = inCol(slot).filter(it => !pos[it.id].hidden).map(it => [pos[it.id].y, pos[it.id].y + pos[it.id].h]);
+    if (slot === "outputs") frames.forEach(f => { const p = fpos[f.name]; if (!p.gone) list.push([p.y, p.y + p.h]); });
+    return list;
+  }
+  function clearY(slot, y) {
+    const obs = obstacles(slot), m = 5;
+    const blocked = v => obs.some(([a, b]) => v > a - m && v < b + m);
+    if (!blocked(y)) return y;
+    const cands = obs.flatMap(([a, b]) => [a - m - 2, b + m + 2]).filter(v => !blocked(v) && v > TOP - 40 && v < BOTTOM + 10);
+    return cands.sort((a, b) => Math.abs(a - y) - Math.abs(b - y))[0] ?? y;
+  }
+
+  // Arrow weight follows influence: thickness and strength scale with the share that flows along it.
+  const strokeFor = f => 0.8 + 4.6 * Math.pow(f, 0.75);
+  function drawEdge(layer, a, b, hot, f) {
+    const A = pos[a], B = pos[b];
+    if (byId[a].slot === byId[b].slot) return drawLoop(layer, A, B, hot, f);
+    const sw = strokeFor(f), L = 5 + sw * 1.1, hh = 2.6 + sw * 0.75;
+    const x1 = A.x + A.w, y1 = A.y + A.h / 2, x2 = B.x - L, y2 = B.y + B.h / 2;
+    const pts = [[x1, y1]];
+    // A left-column input in the brick layout runs straight through the gap first.
+    if (byId[a].slot === "inputs" && A.x < X.inputs + 10 && inCol("inputs").some(it => !pos[it.id].pill && pos[it.id].x > X.inputs + CW)) {
+      pts.push([X.inputs + INPUT_W + 6, y1]);
+    }
+    const from = SLOTS.indexOf(byId[a].slot), to = SLOTS.indexOf(byId[b].slot);
+    for (let k = from + 1; k < to; k++) {
+      const slot = SLOTS[k], left = X[slot] - 14, right = X[slot] + CW + 14;
+      const [px, py] = pts[pts.length - 1];
+      const y = clearY(slot, py + (y2 - py) * ((left - px) / (x2 - px)));
+      pts.push([left, y], [right, y]);
+    }
+    pts.push([x2, y2]);
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
+      if (ay === by) { d += ` L${bx},${by}`; continue; }
+      const dx = Math.max(12, (bx - ax) * 0.5);
+      d += ` C${ax + dx},${ay} ${bx - dx},${by} ${bx},${by}`;
+    }
+    animate(layer, d, `${x2 + L},${y2} ${x2},${y2 - hh} ${x2},${y2 + hh}`, hot, f);
+  }
+
+  // Output to Leave Behinds, same column: loop out the right side and come back in.
+  function drawLoop(layer, A, B, hot, f) {
+    const sw = strokeFor(f), L = 5 + sw * 1.1, hh = 2.6 + sw * 0.75;
+    const x1 = A.x + A.w, y1 = A.y + A.h / 2, xe = B.x + B.w + L, y2 = B.y + B.h / 2;
+    const o = 24 + Math.min(30, Math.abs(y2 - y1) * 0.06);
+    const d = `M${x1},${y1} C${x1 + o},${y1} ${xe + o},${y2} ${xe},${y2}`;
+    animate(layer, d, `${xe - L},${y2} ${xe},${y2 - hh} ${xe},${y2 + hh}`, hot, f);
+  }
+
+  function animate(layer, d, headPts, hot, f) {
+    const path = document.createElementNS(SVGNS, "path");
+    path.setAttribute("d", d);
+    const head = document.createElementNS(SVGNS, "polygon");
+    head.setAttribute("points", headPts);
+    if (hot) { path.classList.add("hot"); head.classList.add("hot"); }
+    const strength = Math.min(0.95, 0.14 + 0.8 * Math.pow(f, 0.75));
+    path.style.strokeWidth = strokeFor(f);
+    path.style.strokeOpacity = hot ? Math.max(0.55, strength) : strength;
+    head.style.fillOpacity = hot ? Math.max(0.6, strength) : strength;
+    layer.appendChild(path);
+    layer.appendChild(head);
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.getBoundingClientRect();
+    path.style.transition = `stroke-dashoffset ${REDUCED ? 1 : DRAW_MS}ms cubic-bezier(.45,.1,.3,1)`;
+    path.style.strokeDashoffset = 0;
+    later(() => head.classList.add("show"), REDUCED ? 0 : DRAW_MS - 60);
+  }
+
+  // ---------- selection ----------
+  let current = null, timers = [], idle = null, layer = null;
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+  function clearWires() {
+    if (!layer) return;
+    const old = layer;
+    old.classList.add("fading");
+    setTimeout(() => old.remove(), 320);
+    layer = null;
+  }
+
+  function select(id) {
+    if (current === id) { reset(); return; }
+    current = id;
+    clearTimers();
+    clearWires();
+    armIdle();
+
+    const { lit, edges, up, self } = trace(id);
+    const group = id.startsWith("g:");
+    // Influence: for sources, the share of the selection that comes from them;
+    // for everything downstream, the share of it that comes from the selection.
+    const targets = [...self], I = {};
+    lit.forEach(n => {
+      if (isRule(n)) return;
+      I[n] = self.has(n) ? 1 : up.has(n) ? avg(targets.map(t => share(n, t))) : avg(targets.map(t => share(t, n)));
+    });
+    const flow = ([a, b]) => { const w = W8[a + ">" + b] || 0; return (self.has(b) || up.has(b)) ? w * I[b] : I[a] * w; };
+    resetBtn.classList.add("show");
+    DATA.items.forEach(it => { els[it.id].classList.remove("on", "picked", "soft"); els[it.id].style.removeProperty("--t"); });
+    frames.forEach(f => frameEls[f.name].classList.toggle("picked", group && "g:" + f.name === id));
+    if (!group) els[id].classList.add("picked");
+    traceLayout(lit);
+    render();
+    if (!group) { els[id].style.setProperty("--t", 1); els[id].classList.add("on"); }
+
+    layer = document.createElementNS(SVGNS, "g");
+    wires.appendChild(layer);
+    const mine = layer;
+
+    // Reveal left to right: a column lights up, then the arrows into the next one.
+    const step = REDUCED ? 0 : 950;
+    let t = REDUCED ? 0 : 950;
+    STAGES.forEach((st, i) => {
+      const nodes = DATA.items.filter(it => lit.has(it.id) && !isRule(it.id) && stageOf(it) === st);
+      if (!nodes.length) return;
+      const incoming = edges.filter(([, b]) => stageOf(byId[b]) === st).sort((x, y) => flow(x) - flow(y));
+      const at = t;
+      later(() => { if (layer === mine) incoming.forEach(e => drawEdge(mine, e[0], e[1], e.hot || e[0] === id || e[1] === id, flow(e))); }, at);
+      later(() => nodes.forEach(it => {
+        const tv = Math.max(0.1, Math.min(1, Math.pow(I[it.id] / 0.6, 0.75)));
+        els[it.id].style.setProperty("--t", tv.toFixed(3));
+        els[it.id].classList.toggle("soft", tv < 0.55);
+        els[it.id].classList.add("on");
+      }), at + (incoming.length && !REDUCED ? DRAW_MS - 150 : 0));
+      t += incoming.length || i === 0 ? step : step / 2;
+    });
+  }
+
+  function reset() {
+    current = null;
+    clearTimers();
+    clearWires();
+    clearTimeout(idle);
+    resetBtn.classList.remove("show");
+    DATA.items.forEach(it => { els[it.id].classList.remove("on", "picked", "soft"); els[it.id].style.removeProperty("--t"); });
+    frames.forEach(f => frameEls[f.name].classList.remove("picked"));
+    restLayout();
+    render();
+  }
+
+  function armIdle() { clearTimeout(idle); idle = setTimeout(reset, IDLE_MS); }
+  // Any activity keeps a trace open; the timer only runs while nobody is using the page.
+  let lastArm = 0;
+  ["pointermove", "keydown", "wheel", "touchstart"].forEach(ev => addEventListener(ev, () => {
+    if (current && Date.now() - lastArm > 1000) { lastArm = Date.now(); armIdle(); }
+  }, { passive: true }));
+
+  resetBtn.addEventListener("click", ev => { ev.stopPropagation(); reset(); hideTip(); });
+  vp.addEventListener("click", () => { if (current) reset(); hideTip(); });
+  addEventListener("keydown", ev => { if (ev.key === "Escape" && current) reset(); });
+
+  // ---------- explainer ----------
+  // After a click the cards move under a still cursor; ignore hover until the mouse really moves.
+  let muted = false, muteAt = null, clickedRecently = false;
+  function muteHover(ev) {
+    muted = true; muteAt = ev && ev.clientX ? [ev.clientX, ev.clientY] : null; clickedRecently = true;
+    setTimeout(() => { clickedRecently = false; }, 900);
+  }
+  addEventListener("pointermove", e => {
+    if (!muted) return;
+    if (!muteAt) { muteAt = [e.clientX, e.clientY]; return; }
+    if (Math.hypot(e.clientX - muteAt[0], e.clientY - muteAt[1]) > 6) muted = false;
+  }, { passive: true });
+  function hoverTip(el, t) { if (!touching && !muted) showTip(el, t); }
+
+  function tipFor(it) {
+    const head = isRule(it.id) ? DATA.copy.col_rules : DATA.copy[HEADS[it.column]];
+    return { over: isRule(it.id) ? `${head} · ${it.group}` : head, title: it.label, body: it.hover, lives: it.lives_in, sec: it.column,
+      livesLabel: it.column === "outputs" ? DATA.copy.lives_output_label : DATA.copy.lives_source_label };
+  }
+
+  function showTip(el, t) {
+    tip.className = "s-" + t.sec;
+    tip.innerHTML = "";
+    const add = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; tip.appendChild(n); return n; };
+    if (t.over) add("div", "over", t.over);
+    add("h3", null, t.title);
+    if (t.body) add("p", null, t.body);
+    if (t.list) { const ul = add("ul"); t.list.forEach(x => { const li = document.createElement("li"); li.textContent = x; ul.appendChild(li); }); }
+    if (t.lives) { const l = add("div", "lives"); l.append(t.livesLabel + ": "); const b = document.createElement("b"); b.textContent = t.lives; l.appendChild(b); }
+    const sheet = document.body.classList.contains("narrow") || touching;
+    tip.classList.toggle("sheet", sheet);
+    if (!sheet) {
+      const r = el.getBoundingClientRect(), tw = t.list ? 360 : 300, pad = 14;
+      tip.style.width = tw + "px";
+      const th = tip.offsetHeight;
+      let x = r.right + pad;
+      if (x + tw > innerWidth - 8) x = r.left - pad - tw;
+      if (x < 8) x = Math.min(innerWidth - tw - 8, Math.max(8, r.left));
+      let y = r.top + r.height / 2 - th / 2;
+      y = Math.max(8, Math.min(innerHeight - th - 8, y));
+      tip.style.left = x + "px";
+      tip.style.top = y + "px";
+    } else { tip.style.width = ""; }
+    tip.classList.add("show");
+  }
+  function hideTip() { tip.classList.remove("show"); }
+
+  // ---------- fit to screen ----------
+  function fit() {
+    const vw = innerWidth, vh = innerHeight;
+    const narrow = vw < 700;
+    let s;
+    if (narrow) s = Math.max(0.62, Math.min(0.9, vh / H));
+    else {
+      s = Math.min(vw / W, vh / H, 1.3);
+      if (vh / H < vw / W && vh / H < 0.6) s = Math.min(vw / W, 1.3);   // short and wide: fit width, scroll down
+    }
+    const scrollY = !narrow && H * s > vh + 1;
+    document.body.classList.toggle("narrow", narrow);
+    document.body.classList.toggle("scrolly", scrollY);
+    const sz = document.getElementById("sizer");
+    sz.style.width = narrow ? W * s + "px" : "100%";
+    sz.style.height = narrow || scrollY ? H * s + "px" : "100%";
+    const ox = narrow ? 0 : Math.max(0, (vw - W * s) / 2), oy = narrow || scrollY ? 0 : (vh - H * s) / 2;
+    stage.style.transform = `translate(${ox}px, ${oy}px) scale(${s})`;
+    // Deselect sits on the grid: right edge of the last column, level with the title.
+    if (narrow) { resetBtn.style.left = "auto"; resetBtn.style.right = "12px"; resetBtn.style.top = "12px"; }
+    else {
+      resetBtn.style.right = "auto";
+      resetBtn.style.left = ox + RIGHT_EDGE * s - resetBtn.offsetWidth + "px";
+      resetBtn.style.top = oy + 48 * s + (35 * s - resetBtn.offsetHeight) / 2 + "px";
+    }
+    updateFade();
+    hideTip();
+  }
+  function updateFade() {
+    fadeEl.classList.toggle("show", vp.scrollLeft + vp.clientWidth < vp.scrollWidth - 4);
+  }
+  addEventListener("resize", fit);
+  vp.addEventListener("scroll", () => { hideTip(); updateFade(); }, { passive: true });
+
+  restLayout();
+  render();
+  fit();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("ready")));
+})();
+</script>
+</body>
+</html>

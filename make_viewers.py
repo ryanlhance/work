@@ -25,6 +25,9 @@ PIECES = [
      '.duescard a[href*="venmo"]{display:none}', ""),
     ("personas", "Agentic Personas", "Information Architecture for Human-like Outputs",
      "https://ryanlhance.github.io/farmer-persona/", None, "", ""),
+    ("career-architecture", "Career Knowledge Architecture",
+     "Information Architecture for Human-like Outputs",
+     "../pieces/career-architecture.html", None, "", ""),
 ]
 
 TEMPLATE = """<!DOCTYPE html>
@@ -58,7 +61,7 @@ TEMPLATE = """<!DOCTYPE html>
 </html>
 """
 
-V = 6
+V = 7
 
 
 def main():

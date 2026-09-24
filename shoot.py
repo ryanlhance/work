@@ -52,6 +52,7 @@ SITES = {
     "dashboard":     ("https://ryanlhance.github.io/work/workshop/dashboard/", 3000, None),
     "draftroom":     ("https://ryanlhance.github.io/work/pieces/draft-room.html", 3500, None),
     "frontoffice":   ("https://ryanlhance.github.io/work/pieces/front-office.html", 3500, None),
+    "careerarch":    ("https://ryanlhance.github.io/work/pieces/career-architecture.html", 4000, None),
 }
 
 # Captured at phone size and framed as a device on the card.
