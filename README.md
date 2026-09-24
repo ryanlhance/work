@@ -27,6 +27,16 @@ native image drags a phone would never start, and hide the league's dues link in
 the portfolio's copy without touching the real hub. The dev server proxies the
 pieces that need it so the preview behaves the same.
 
+## Link preview
+
+`make_share_image.py` renders `share.png` at 1200x630 from the site's own tokens
+and screenshots. Re-run it if the title or the featured projects change.
+
+`robots.txt` allows the preview bots and disallows everyone else. A blanket
+disallow would stop those bots fetching the page at all, so a shared link would
+unfurl as a bare URL. What actually keeps the site out of search is the
+`noindex` tag on every page.
+
 ## Files authored elsewhere
 
 Five files here are exported from other projects: the two DCHC builds, the
